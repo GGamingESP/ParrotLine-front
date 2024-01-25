@@ -4,16 +4,16 @@ function Layout() {
     return (
         <>
             <li>
-                <Link to="/Login" className="text-2xl">About Us</Link>
+                <Link to="/AboutUs" className="text-2xl">About Us</Link>
             </li>
             <li>
-                <Link to="/Login" className="text-4xl">ParrotLine Web</Link>
+                <Link to="/ParrotLineWeb" className="text-4xl">ParrotLine Web</Link>
             </li>
             <li>
-                <Link to="/Login" className="text-2xl">Privacy</Link>
+                <Link to="/Privacy" className="text-2xl">Privacy</Link>
             </li>
-        <hr />
-        <Outlet />
+            <hr />
+            <Outlet />
         </>
     )
 }

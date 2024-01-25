@@ -3,16 +3,39 @@
 function Login() {
     return (
         <>
-            <div className="bg-[#FAF0E2] min-h-screen">
-                
-                <div className="card w-96 bg-base-100 shadow-xl">
-                    <figure><img src="https://daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" /></figure>
-                    <div className="card-body">
-                        <h2 className="card-title">Shoes!</h2>
-                        <p>If a dog chews shoes whose shoes does he choose?</p>
-                        <div className="card-actions justify-end">
-                            <button className="btn btn-primary">Buy Now</button>
+            <div className="bg-[#1b8daf] min-h-screen flex items-center justify-center">
+                <div className="bg-[#53dbaf] text-white p-6 rounded-md shadow-md">
+                    <form>
+                        <label className="block mb-2 text-sm text-gray-600"></label>
+                        <input type="email" className="w-full mb-4 p-2 border rounded" />
+
+                        <label className="block mb-2 text-sm text-gray-600">C</label>
+                        <input type="password" className="w-full mb-2 p-2 border rounded" />
+
+                        <div className="flex items-center justify-between mb-4">
+                            <div className="flex items-center">
+                                <input type="checkbox" className="mr-2" />
+                                <label className="text-sm text-black">Recordarme</label>
+                            </div>
+
+                            <a href="#" className="text-sm  text-black">
+                                ¿Contraseña olvidada?
+                                
+                            </a>
                         </div>
+
+                        <button
+                            type="submit"
+                            className="btn w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-200 "
+                        >
+                            Iniciar sesión
+                        </button>
+                    </form>
+
+                    <div className="flex justify-between mt-4">
+                        <a href="#" className="text-sm text-black">
+                            Create Account
+                        </a>
                     </div>
                 </div>
             </div>
