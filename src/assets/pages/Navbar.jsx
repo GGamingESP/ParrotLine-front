@@ -2,7 +2,7 @@ import { useState } from 'react';
 import logoImage from '../images/loro.png'
 import { RxDownload } from 'react-icons/rx'
 
-export default function Navbar() {
+function Navbar() {
 
 
     const [isDarkMode, setIsDarkMode] = useState(false);
@@ -13,7 +13,7 @@ export default function Navbar() {
 
     return (
         <>
-            <div className={`navbar bg-[#5894ad] text-white ${isDarkMode ? 'dark' : ''}`}>
+            <div className={`navbar bg-[#5894ad] text-white border-b border-black ${isDarkMode ? 'dark' : ''}`}>
                 <div className="navbar-start">
                     <div className="dropdown">
                         <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -73,3 +73,5 @@ export default function Navbar() {
 
     )
 }
+
+export default Navbar

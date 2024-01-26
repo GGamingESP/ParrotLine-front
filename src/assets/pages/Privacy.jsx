@@ -50,7 +50,21 @@ function Privacy() {
                     <p className="text-gray-700 mb-4">
                         We may disclose personal information in good faith when required by law or in response to valid requests by public authorities.
                     </p>
+                    <h2 className="text-2xl text-[#6f747e] font-semibold mb-2">Security</h2>
+
+                    <p className="text-gray-700 mb-4">
+                        The security of your personal information is important to us, but remember that no method of transmission over the Internet, or method of electronic storage, is 100% secure. While we strive to use commercially acceptable means to protect your personal information, we cannot guarantee its absolute security.
+                    </p>
+
+                    <h2 className="text-2xl text-[#6f747e] font-semibold mb-2">Links to Other Sites</h2>
+
+                    <p className="text-gray-700 mb-4">
+                        Our site may contain links to other sites that are not operated by us. If you click on a third-party link, you will be directed to that third party s site. We strongly advise you to review the Privacy Policy of every site you visit.
+                    </p>
+
+                    {/* Include more sections as needed based on your privacy policy content. */}
                 </div>
+
 
                 <Footer />
             </div>

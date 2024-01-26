@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 
 // Componente Chat que representa la página de chat
-const Web = () => {
+function Web () {
     // Estado para almacenar los mensajes
     const [messages, setMessages] = useState([]);
     // Estado para almacenar el mensaje actual que está siendo escrito
@@ -76,6 +76,6 @@ const Web = () => {
             </div>
         </div>
     );
-};
+}
 
 export default Web;

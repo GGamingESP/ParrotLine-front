@@ -1,4 +1,5 @@
 import parrot3 from '../images/parrot3.png'
+import parrot4 from '../images/parrot4.png'
 
 function Forgot_password() {
     return (
@@ -9,6 +10,13 @@ function Forgot_password() {
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed',
         }}>
+            <div className="hero-content flex-col lg:flex-row-reverse  ">
+                <div className="text-center lg:text-left ">
+                    <h1 className="text-7xl font-bold hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PARROTLINE</h1>
+                    <p className="py-6 hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Your voice, your colors, your connection.</p>
+                </div>
+                <img src={parrot4} alt="Descripción de la imagen" className="w-40 hidden md:block" />
+            </div>
             <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[29rem]">
                 <div className="max-w-md mx-auto ">
                     <form>

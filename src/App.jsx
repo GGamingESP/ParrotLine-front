@@ -19,7 +19,7 @@ function App() {
 
         <div className="container mx-auto my-5 text-black">
           <div className="flex items-center">
-            <div className="border-l-4 border-[#47af90] pl-4">
+            <div className="border-l-2 border-[#47af90]  pl-4">
               <p className="text-5xl mb-5">
                 Connect instantly,
               </p>
@@ -37,7 +37,7 @@ function App() {
           <div className="text-center my-40">
             <div className="inline-block">
               <p className="text-5xl mb-4">Connect from anywhere any time.</p>
-              <div className="left-0 right-0 mx-auto w-30 h-2 bg-[#47af90]"></div>
+              <div className="left-0 right-0 mx-auto w-30 h-2 rounded-md bg-[#47af90]"></div>
             </div>
 
             <div className="flex-shrink-0 flex-col items-center my-20 sm:flex-row sm:justify-center">
@@ -49,7 +49,7 @@ function App() {
           <div className="text-center my-40">
             <div className="inline-block">
               <p className="text-5xl mb-4">Discover a new way to Communicate.</p>
-              <div className="left-0 right-0 mx-auto w-30 h-2 bg-[#47af90]"></div>
+              <div className="left-0 right-0 rounded-md mx-auto w-30 h-2 bg-[#47af90]"></div>
             </div>
 
             <div className="flex-shrink-0 flex items-center my-40 sm:flex-row sm:justify-center">

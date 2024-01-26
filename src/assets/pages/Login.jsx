@@ -1,4 +1,5 @@
 import parrot3 from '../images/parrot3.png';
+import parrot4 from '../images/parrot4.png'
 
 function Login() {
     return (
@@ -9,14 +10,22 @@ function Login() {
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed',
         }}>
+            <div className="hero-content flex-col lg:flex-row-reverse animate__animated animate__bounceInRight">
+                <div className="text-center lg:text-left">
+
+                    <h1 className="text-7xl font-bold hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PARROTLINE</h1>
+                    <p className="py-6 hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Your voice, your colors, your connection.</p>
+                </div>
+                <img src={parrot4} alt="Descripción de la imagen" className="w-40 hidden md:block" />
+            </div>
             <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[35rem]">
                 <div className="max-w-md mx-auto ">
                     <form>
                         <div className="mb-4">
                             <div className="mb-5">
                                 <div className="text-center mb-4">
-                                    <h1 className="text-4xl font-mono mb-2">LOGIN</h1>
-                                    <div className="w-28 mx-auto   border-b border-2 rounded-md  border-[#39B7AF]"></div>
+                                    <h1 className="text-4xl font-mono mb-2">Sign In</h1>
+                                    <div className="w-40 mx-auto   border-b border-2 rounded-md  border-[#39B7AF]"></div>
                                 </div>
                             </div>
                             <div>
@@ -55,18 +64,17 @@ function Login() {
 
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center">
-                                <input type="checkbox" className="mr-2 bg-white border-none checkbox checkbox-error" />
-                                <label className="text-sm text-black">Remember me </label>
+                                <input type="checkbox" className="mr-2 bg-white border-none checkbox checkbox-info" />
+                                <label className="text-sm text-black">Remember me!!! </label>
                             </div>
 
                             <a href="/Forgot_password" className="text-sm text-black transition-transform transform hover:scale-105">
-                                Forgotten password?
+                                Forgot password?
                             </a>
                         </div>
 
-                        <a href="/Web"><button type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
+                        <a href="/Web" type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
                             Sign in
-                        </button>
                         </a>
                     </form>
 
@@ -80,7 +88,7 @@ function Login() {
                         </a>
                     </div>
                     <div className="relative top-20 right-7 transform translate-x-1/2 -translate-y-1/2">
-                        <a href="/"><img src={parrot3} alt="Icono" className="h-16 w-16 object-cover transition-transform transform hover:scale-105" /></a>
+                        <a href="/web"><img src={parrot3} alt="Icono" className="h-16 w-16 object-cover transition-transform transform hover:scale-105" /></a>
                     </div>
                 </div>
             </div>
