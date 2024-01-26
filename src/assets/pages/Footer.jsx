@@ -5,8 +5,8 @@ function Footer() {
     return (
         <footer className="footer items-center p-4 bg-neutral text-neutral-content">
             <aside className="flex items-center space-x-3">
-                <img src={logoImage} alt="Logo" className="h-14 w-14 mr-1" />
-                <a className="text-4xl">PARROTLITE</a>
+                <a href="/"><img  src={logoImage} alt="Logo" className="h-14 w-14 mr-1 transition-transform transform hover:scale-105" /></a>
+                <a  href="/" className="text-4xl transition-transform transform hover:scale-105">PARROTLINE</a>
                 <button className="btn border-none hover:bg-[#47af90] hover:scale-[103%] transition-all text-xl bg-[#47af90] text-white ml-4">
                     Download
                     <RxDownload size={27} />
@@ -19,11 +19,11 @@ function Footer() {
                 <p>Project Created by: Yeray Santana Curbelo and Iván Dasilva Martín</p>
             </aside>
             <aside>
-                <a href="http://">Accesibility</a>
+                <a href="http://" className="transition-transform transform hover:scale-105">Accesibility</a>
             </aside>
             <nav className="grid-flow-col gap-4 md:place-self-center md:justify-self-end">
-                <a href="https://github.com/GGamingESP/ParrotLine-front"><RxGithubLogo size={30} />FRONT</a>
-                <a href="https://github.com/GGamingESP/ParrotLine-back"><RxGithubLogo size={30} />BACK</a>
+                <a href="https://github.com/GGamingESP/ParrotLine-front" className="transition-transform transform hover:scale-105"><RxGithubLogo size={30} />FRONT</a>
+                <a href="https://github.com/GGamingESP/ParrotLine-back" className="transition-transform transform hover:scale-105"><RxGithubLogo size={30} />BACK</a>
             </nav>
         </footer>
     )
