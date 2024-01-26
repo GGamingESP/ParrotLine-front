@@ -2,6 +2,8 @@ import parrot3 from '../images/parrot3.png'
 import parrot4 from '../images/parrot4.png'
 
 function Forgot_password() {
+
+
     return (
         <div className=" bg-[#1b8daf] min-h-screen flex items-center justify-end relative " style={{
             backdropFilter: 'blur(10px)',

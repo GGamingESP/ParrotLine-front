@@ -3,13 +3,11 @@ import logoImage from '../images/loro.png'
 import { RxDownload } from 'react-icons/rx'
 
 function Navbar() {
-
-
     const [isDarkMode, setIsDarkMode] = useState(false);
 
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
-    };    
+    }
 
     return (
         <>

@@ -1,17 +1,10 @@
-// Importa los módulos necesarios de React
 import { useState, useEffect } from "react";
 
-
-// Componente Chat que representa la página de chat
-function Web () {
-    // Estado para almacenar los mensajes
+function Web() {
     const [messages, setMessages] = useState([]);
-    // Estado para almacenar el mensaje actual que está siendo escrito
     const [currentMessage, setCurrentMessage] = useState("");
 
-    // Efecto para simular la carga de mensajes (puedes reemplazar esto con llamadas a una API)
     useEffect(() => {
-        // Simulación de mensajes
         const initialMessages = [
             { user: "John", text: "Hola, ¿cómo estás?" },
             { user: "Jane", text: "¡Hola! Estoy bien, ¿y tú?" },
@@ -20,8 +13,16 @@ function Web () {
         setMessages(initialMessages);
     }, []);
 
-    // Función para enviar un nuevo mensaje
     const sendMessage = () => {
+        if (currentMessage.trim() !== "") {
+            const newMessage = { user: "John", text: currentMessage };
+            setMessages([...messages, newMessage]);
+            setCurrentMessage("");
+        }
+    };
+
+    const handlesubmit = (e) => {
+        e.preventDefault();
         if (currentMessage.trim() !== "") {
             const newMessage = { user: "John", text: currentMessage };
             setMessages([...messages, newMessage]);
@@ -31,47 +32,50 @@ function Web () {
 
     return (
         <div className="flex h-screen">
-            {/* Panel de usuarios */}
-            <div className="w-1/4 bg-gray-200 p-4">
+            <div className="w-1/4 bg-[#4aa88f] p-4">
                 <h2 className="text-lg font-semibold mb-4">Usuarios</h2>
-                {/* Lista de usuarios (puedes obtener esto de una API) */}
                 <ul>
                     <li className="mb-2">John</li>
                     <li className="mb-2">Jane</li>
                 </ul>
             </div>
 
-            {/* Panel de chat */}
             <div className="flex-1 flex flex-col bg-white p-4">
-                {/* Encabezado del chat */}
-                <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold">Chat con Jane</h2>
-                </div>
-
-                {/* Mensajes */}
-                <div className="flex-1 overflow-y-auto">
+                <div className="overflow-y-auto max-h-[calc(100vh-64px)] pb-4">
                     {messages.map((message, index) => (
-                        <div key={index} className="mb-2">
-                            <span className="font-semibold">{message.user}:</span> {message.text}
+                        <div key={index} className="chat chat-start">
+                            <div className="chat-image avatar">
+                                <div className="w-10 rounded-full">
+                                    <img alt="Tailwind CSS chat bubble component" src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg" />
+                                </div>
+                            </div>
+                            <div className="chat-header">
+                                {message.user}
+                            </div>
+                            <div className="chat-bubble">{message.text}</div>
+                            <div className="chat-footer opacity-50">Seen</div>
                         </div>
                     ))}
                 </div>
+                <div className="flex-1"></div> {/* Espacio flexible para empujar el contenido hacia arriba */}
 
-                {/* Área de entrada de mensajes */}
-                <div className="flex items-center mt-4">
-                    <input
-                        type="text"
-                        value={currentMessage}
-                        onChange={(e) => setCurrentMessage(e.target.value)}
-                        placeholder="Escribe un mensaje..."
-                        className="flex-1 border border-gray-300 p-2 rounded"
-                    />
-                    <button
-                        onClick={sendMessage}
-                        className="ml-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-                    >
-                        Enviar
-                    </button>
+                <div className="flex justify-center ">
+                    <form action="" className="flex-1 w-max" onSubmit={(e) => { handlesubmit(e) }}>
+                        <input
+                            type="text"
+                            value={currentMessage}
+                            onChange={(e) => setCurrentMessage(e.target.value)}
+                            placeholder="Escribe un mensaje..."
+                            className=" border border-gray-300 p-2 rounded w-[90%]"
+                        />
+                        <input
+                            type="submit"
+                            onClick={sendMessage}
+                            value={"Enviar"}
+                            className="ml-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-[9%]"
+                        >
+                        </input>
+                    </form>
                 </div>
             </div>
         </div>

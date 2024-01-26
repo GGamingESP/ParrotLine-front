@@ -57,6 +57,7 @@ function Login() {
                                         id="password"
                                         className="w-full p-2 pl-8 border rounded"
                                         placeholder="******"
+                                        
                                     />
                                 </div>
                             </div>
@@ -88,7 +89,7 @@ function Login() {
                         </a>
                     </div>
                     <div className="relative top-20 right-7 transform translate-x-1/2 -translate-y-1/2">
-                        <a href="/web"><img src={parrot3} alt="Icono" className="h-16 w-16 object-cover transition-transform transform hover:scale-105" /></a>
+                        <a href="/"><img src={parrot3} alt="Icono" className="h-16 w-16 object-cover transition-transform transform hover:scale-105" /></a>
                     </div>
                 </div>
             </div>
