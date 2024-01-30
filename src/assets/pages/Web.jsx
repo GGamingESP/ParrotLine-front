@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
-import { FaSmile, FaPlus, FaEllipsisV, FaCog, FaUserPlus } from 'react-icons/fa';
+import { FaSmile, FaPlus, FaEllipsisV, FaCog, FaUserPlus, FaPaperPlane } from 'react-icons/fa';
 import { MdGroupAdd } from "react-icons/md";
+
 import logoImage from '../images/loro.png'
+
 
 function Web() {
     const [messages, setMessages] = useState([]);
     const [currentMessage, setCurrentMessage] = useState("");
-
-
 
     useEffect(() => {
         const initialMessages = [
@@ -26,15 +26,13 @@ function Web() {
         }
     };
 
-    const handlesubmit = (e) => {
-        e.preventDefault();
-        if (currentMessage.trim() !== "") {
-            const newMessage = { user: "John", text: currentMessage };
-            setMessages([...messages, newMessage]);
-            setCurrentMessage("");
-        }
-    };
+    const [isDropdownVisible, setIsDropdownVisible] = useState(false);
 
+    const handleSettingsClick = () => {
+        // Cambia el estado para mostrar u ocultar el desplegable
+        setIsDropdownVisible(!isDropdownVisible);
+    };
+    
     return (
         <div className="flex h-screen">
             <div className="w-64 bg-[#4aa88f] p-4 border-r-2 border-[#327462]">
@@ -48,11 +46,21 @@ function Web() {
                         />
                     </div>
                     <div className="ml-4">
-                        <h3 className=" text-3x1 font-semibold">Nombre del Usuario</h3>
+                        <h3 className=" text-3x1 text-white font-semibold">John</h3>
                         {/* Botón de ajustes */}
-                        <button className="text-gray-500 hover:text-gray-700" onClick={() => handleSettingsClick()}>
-                            <FaCog />
-                        </button>
+                        <div className="ml-4 relative">
+                            <button className="text-white hover:text-gray-700" onClick={handleSettingsClick}>
+                                <FaCog />
+                            </button>
+                            {/* Desplegable */}
+                            {isDropdownVisible && (
+                                <div className="absolute right-0 mt-2 bg-white p-2 rounded shadow">
+                                    {/* Contenido del desplegable */}
+                                    <div>Texto del desplegable</div>
+                                    {/* Puedes agregar más elementos según sea necesario */}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
@@ -67,10 +75,10 @@ function Web() {
 
                 {/* Iconos de "Agregar amigo" y "Crear grupo" */}
                 <div className="flex items-center justify-center space-x-4 mb-4">
-                    <button className="text-gray-500 hover:text-gray-700" onClick={() => handleAddFriend()}>
+                    <button className="text-white hover:text-gray-700" onClick={() => handleAddFriend()}>
                         <FaUserPlus size={24} />
                     </button>
-                    <button className="text-gray-500 hover:text-gray-700" onClick={() => handleCreateGroup()}>
+                    <button className="text-white hover:text-gray-700" onClick={() => handleCreateGroup()}>
                         <MdGroupAdd size={24} />
                     </button>
                 </div>
@@ -87,8 +95,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Jane</h3>
-                                <p className="text-xs text-gray-500">!Hola¡ Estoy bien, ¿y tú?</p>
+                                <h3 className="text-sm text-white font-semibold">Jane</h3>
+                                <p className="text-xs text-white">!Hola¡ Estoy bien, ¿y tú?</p>
                             </div>
                         </div>
                     </li>
@@ -102,8 +110,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -117,8 +125,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -132,8 +140,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -147,8 +155,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -162,8 +170,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -177,8 +185,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -192,8 +200,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -207,8 +215,8 @@ function Web() {
                                 />
                             </div>
                             <div className="ml-2">
-                                <h3 className="text-sm font-semibold">Nombre del Canal</h3>
-                                <p className="text-xs text-gray-500">Último mensaje...</p>
+                                <h3 className="text-sm text-white font-semibold">Nombre del Canal</h3>
+                                <p className="text-xs text-white">Último mensaje...</p>
                             </div>
                         </div>
                     </li>
@@ -221,7 +229,7 @@ function Web() {
 
                 <div className="flex-1"></div>
 
-                <div className="flex  border-t pt-4 items-center justify-center">
+                <div className="  border-t pt-4 items-center justify-center">
                     <img src={logoImage} alt="Logotipo" className="flex-1 w-32 " />
                 </div>
             </div>
@@ -240,14 +248,14 @@ function Web() {
 
                     {/* Información del usuario */}
                     <div className="flex-1">
-                        <h2 className="text-lg font-semibold mb-2">Jane</h2>
-                        <p className="text-gray-500 text-sm">Descripcion</p>
+                        <h2 className="text-lg font-semibold text-white">Jane</h2>
+                        <p className="text-white text-sm pt-[-0.2em]">Descripcion</p>
                     </div>
 
                     {/* Icono de opciones al final */}
                     <div>
                         {/* Puedes reemplazar FaEllipsisV con el icono que desees */}
-                        <FaEllipsisV size={20} />
+                        <FaEllipsisV className="text-white" size={20} />
                     </div>
                 </div>
 
@@ -268,25 +276,22 @@ function Web() {
                                 </div>
                             </div>
                             <div className="chat-header">{message.user}</div>
-                            <div className={`chat-bubble ${message.user === "John" ? "bg-green-500 text-white ml-auto" : ""}`}>
+                            <div className={`chat-bubble ${message.user === "John" ? "bg-green-500 text-white ml-auto" : ""}`}
+                                style={{ wordWrap: 'break-word', overflowWrap: 'break-word' }}>
                                 {message.text}
                             </div>
                             <div className="chat-footer opacity-50">Seen</div>
                         </div>
                     ))}
                 </div>
+
                 <div className="flex-1"></div> {/* Espacio flexible para empujar el contenido hacia arriba */}
 
                 <div className="flex justify-center ">
-                    <form action="" className="flex-1 w-max " onSubmit={(e) => { handlesubmit(e) }}>
+                    <form action="" className="flex-1 w-max bg-[#4aa88f]" onSubmit={(e) => { e.preventDefault(); sendMessage(); }}>
                         {/* Icono de emoji */}
-                        <button className="text-gray-500 p-2  hover:text-gray-700" onClick={() => toggleModal('emoji')}>
+                        <button className="text-gray-500 p-2   hover:text-gray-700">
                             <FaSmile size={27} />
-                        </button>
-
-                        {/* Icono para abrir el mini modal */}
-                        <button className="text-gray-500 p-2  hover:text-gray-700" onClick={() => setIsModalOpen(true)}>
-                            <FaPlus size={27} />
                         </button>
 
                         <input
@@ -296,12 +301,15 @@ function Web() {
                             placeholder="Write a Messaje..."
                             className="border border-gray-300 p-2 rounded w-[80%]" // Ajusté el ancho del input
                         />
-                        <input
+                        <button
                             type="submit"
                             onClick={sendMessage}
-                            value={"Send"}
-                            className="ml-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600 w-[9%]"
-                        />
+                            className="ml-2 bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                        >
+
+                            <FaPaperPlane size={20} />
+                        </button>
+
                     </form>
                 </div>
             </div>
