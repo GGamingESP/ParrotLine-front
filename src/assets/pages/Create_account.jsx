@@ -40,6 +40,7 @@ function Create_password() {
                     id="email"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="Email"
+                    required
                   />
                 </div>
               </div>
@@ -56,6 +57,7 @@ function Create_password() {
                     id="password"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="Username"
+                    required
                   />
                 </div>
               </div>
@@ -72,6 +74,7 @@ function Create_password() {
                     id="password"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="******"
+                    required
                   />
                 </div>
               </div>
@@ -88,6 +91,24 @@ function Create_password() {
                     id="password"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="******"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="Description" className="block mb-2 text-sm text-gray-600">
+                  Description (Optional)
+                </label>
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-2">
+                    📜
+                  </span>
+                  <input
+                    type="text"
+                    id="Description"
+                    className="w-full p-2 pl-8 border rounded"
+                    placeholder="Place your description"
                   />
                 </div>
               </div>

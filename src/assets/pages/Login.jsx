@@ -41,6 +41,7 @@ function Login() {
                                         id="email"
                                         className="w-full p-2 pl-8 border rounded "
                                         placeholder="Email"
+                                        required
                                     />
                                 </div>
                             </div>
