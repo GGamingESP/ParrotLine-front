@@ -4,39 +4,21 @@ import { FaSmile, FaPlus, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const [setSelectedFile] = useState(null);
-  const [setSelectedEmoji] = useState("");
 
   const handleEmojiSelect = (emoji) => {
     setCurrentMessage((prevMessage) => prevMessage + emoji);
   };
 
-
   const emojiList = [
     '\u{1F60A}', '\u{1F44D}', '\u{2764}', '\u{1F602}', '\u{1F389}', '\u{1F44B}', '\u{1F525}',
     '\u{1F64C}', '\u{2B50}', '\u{1F914}', '\u{1F680}', '\u{1F4A1}', '\u{1F4DA}', '\u{1F3A8}',
-    '\u{1F468}', '\u{200D}', '\u{1F4BB}', '\u{1F6A6}', '\u{1F3A4}', '\u{1F4F7}', '\u{2615}', '\u{1F917}'
+    '\u{1F468}', '\u{200D}', '\u{1F4BB}', '\u{1F6A6}', '\u{1F3A4}', '\u{1F4F7}', '\u{2615}',
+    '\u{1F917}'
   ];
 
 
-  const [deleteMode, setDeleteMode] = useState(null);
-
-  const handleDeleteMode = (index) => {
-    setDeleteMode(index);
-  };
-
-  const handleCancelDelete = () => {
-    setDeleteMode(null);
-  };
-
-  const handleConfirmDelete = () => {
-    // Eliminar el mensaje y salir del modo de eliminación
-    const updatedMessages = [...messages];
-    updatedMessages.splice(deleteMode, 1);
-    setMessages(updatedMessages);
-    setDeleteMode(null);
-  };
 
   useEffect(() => {
     const initialMessages = [
@@ -53,10 +35,10 @@ function ChatMessages() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      // Enviar automáticamente la imagen como mensaje
       sendMessageWithImage(file);
     }
   };
+
 
   const sendMessageWithImage = (imageFile) => {
     // Obtener la hora actual
@@ -79,8 +61,8 @@ function ChatMessages() {
 
     // Limpiar la selección de archivo
     setSelectedFile(null);
+    
   };
-
 
   const sendMessage = () => {
     if (currentMessage.trim() !== "") {
@@ -102,7 +84,6 @@ function ChatMessages() {
 
       // Limpiar el campo de mensaje actual y el emoji seleccionado
       setCurrentMessage("");
-      setSelectedEmoji("");
     }
   };
 
@@ -144,20 +125,9 @@ function ChatMessages() {
                 <img
                   alt="Tailwind CSS chat bubble component"
                   src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-                  onMouseEnter={() => handleDeleteMode(index)}
-                  onMouseLeave={() => handleDeleteMode(null)}
-                  onClick={() => handleDeleteClick(index)}
+
                 />
-                {deleteMode === index && (
-                  <div className="delete-overlay">
-                    <span onClick={handleConfirmDelete} className="delete-confirm">
-                      ¿Estás seguro?
-                    </span>
-                    <span onClick={handleCancelDelete} className="delete-cancel">
-                      Cancelar
-                    </span>
-                  </div>
-                )}
+                )
               </div>
             </div>
             <div className="chat-header">{message.user}</div>
@@ -241,8 +211,7 @@ function ChatMessages() {
             placeholder="Escribe un mensaje..."
             className="flex-1 border border-gray-300 p-2 rounded ml-2 focus:outline-none"
           />
-
-
+          
           {/* Botón para enviar mensaje */}
           <button
             type="submit"

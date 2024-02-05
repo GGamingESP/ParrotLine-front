@@ -25,7 +25,7 @@ function AboutUs() {
                         {/* Backend Section */}
                         <div className="text-center w-full md:w-1/2 lg:w-1/4 mb-8">
                             <FaServer className="text-5xl text-green-500 mb-2 mx-auto" />
-                            <h2 className="text-xl text-[#6f747e] font-semibold mb-2">Ivan Dasilva Martín</h2>
+                            <h2 className="text-xl text-[#6f747e] font-semibold mb-2">Ivan Da silva Martín</h2>
                             <p className="text-gray-600">Backend Developer</p>
                         </div>
 

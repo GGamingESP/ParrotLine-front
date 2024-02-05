@@ -7,6 +7,7 @@ import UserChannels from "../components/UserChannels";
 import ChatMessages from "../components/ChatMessages";
 
 function Web() {
+
     return (
         <div className="flex h-screen">
             <div className="w-64 bg-[#4aa88f] p-4 border-r-2 border-[#327462]">

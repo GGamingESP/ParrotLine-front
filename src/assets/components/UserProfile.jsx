@@ -15,8 +15,8 @@ function UserProfile() {
   const [name, setName] = useState('John'); // Cambia 'Tu Nombre' por el nombre actual
   const [description, setDescription] = useState('Tu Descripción'); // Cambia 'Tu Descripción' por la descripción actual // Cambia 'Tu Descripción' por la descripción actual
 
-  const [ setSelectedFile] = useState(null);
-  
+  const [setSelectedFile] = useState(null);
+
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
   };
@@ -46,9 +46,10 @@ function UserProfile() {
     <div className="flex items-center mb-4 ">
       <div className="w-12 h-12 rounded-full overflow-hidden">
         <img
+          className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
+          onClick={() => document.getElementById('modal_1').showModal()}
           src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
           alt="User profile"
-          className="w-full h-full object-cover"
         />
       </div>
       <div className="ml-4">
@@ -184,7 +185,7 @@ function UserProfile() {
 
         </div>
       </div>
-    </div>
+    </div >
   );
 }
 

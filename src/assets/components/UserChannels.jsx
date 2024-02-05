@@ -1,5 +1,4 @@
 // UserChannels.js
-
 function UserChannels() {
   return (
     <ul className="sm:max-h-[420px] md:max-h-[420px] lg:max-h-[420px] xl:max-h-[420px] 2xl:max-h-[640px] overflow-y-auto">
