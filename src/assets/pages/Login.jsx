@@ -1,7 +1,60 @@
 import parrot3 from '../images/parrot3.png';
 import parrot4 from '../images/parrot4.png'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { Login_url } from '../../data/data';
+
+
 
 function Login() {
+    const handleSignIn = (event) => {
+        event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+        // Validar los campos aquí
+        const email = event.target.email.value;
+        const password = event.target.password.value;
+
+        if (email.trim() === '' || password.trim() === '') {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        // Aquí puedes realizar cualquier acción adicional, como enviar la solicitud de inicio de sesión
+        console.log('Campos completados:', { email, password });
+
+            axios.post(Login_url, {
+                email: email,
+                password: password
+            }).then(function (response) {
+                toast.success('Inicio de sesión exitoso', { autoClose: 1500 }); // Mensaje de éxito durante 3 segundos
+                setTimeout(() => {
+                 window.location.href = '/Web'; // Redirige a la página deseada después de 3 segundos
+                }, 2000);
+                console.log(response.data.data)
+                let currentUser = {
+                    token: response.data.data.token,
+                    user: {
+                        name: response.data.data.user.name,
+                        email: response.data.data.user.email,
+                        image: response.data.data.user.image,
+                        description: response.data.data.user.description,
+                        id: response.data.data.user.id
+                    }
+                }
+
+                sessionStorage.setItem("currentUser",JSON.stringify(currentUser))
+
+            }).catch(function (error) {
+                console.error('Error al iniciar sesión:', error);
+                toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.');
+            });
+
+           
+    };
+
+
     return (
         <div className=" bg-[#1b8daf] min-h-screen flex items-center justify-end relative " style={{
             backdropFilter: 'blur(10px)',
@@ -20,7 +73,7 @@ function Login() {
             </div>
             <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[35rem]">
                 <div className="max-w-md mx-auto ">
-                    <form>
+                    <form onSubmit={handleSignIn}>
                         <div className="mb-4">
                             <div className="mb-5">
                                 <div className="text-center mb-4">
@@ -75,10 +128,12 @@ function Login() {
                             </a>
                         </div>
 
-                        <a href="/Web" type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
+                        <button type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
                             Sign in
-                        </a>
+                        </button>
+
                     </form>
+                    <ToastContainer />
 
                     <div className="flex justify-center mt-4 space-x-4">
                         <a href="/Create_account" className="text-sm text-black transition-transform transform hover:scale-105">

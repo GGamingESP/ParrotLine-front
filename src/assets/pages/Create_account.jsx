@@ -1,7 +1,52 @@
 import parrot3 from '../images/parrot3.png'
 import parrot4 from '../images/parrot4.png'
+import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+import { Register_url } from '../../data/data';
+
 
 function Create_password() {
+  const handleRegister = (event) => {
+    event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+
+    // Validar los campos aquí
+    const email = event.target.email.value;
+    const name = event.target.name.value;
+    const password = event.target.password.value;
+    const description = event.target.description.value;
+    const password_confirmation = event.target.password_confirmation.value;
+
+    if (email.trim() === '' || password.trim() === '') {
+      alert('Por favor, completa todos los campos.');
+      return;
+    }
+
+    // Aquí puedes realizar cualquier acción adicional, como enviar la solicitud de inicio de sesión
+    console.log('Campos completados:', { email, password });
+
+    axios.post(Register_url, {
+      email: email,
+      name: name,
+      password: password,
+      password_confirmation: password_confirmation,
+      description: description
+    }).then(function (response) {
+      toast.success('Creacion de cuenta exitoso', { autoClose: 1500 }); // Mensaje de éxito durante 3 segundos
+      setTimeout(() => {
+        window.location.href = '/Login'; // Redirige a la página deseada después de 3 segundos
+      }, 2000);
+      console.log(response.data)
+
+    }).catch(function (error) {
+      console.error('Error al Crear cuenta:', error);
+      toast.error('Error al intentar Crear cuenta. Por favor, intenta de nuevo.');
+    });
+
+
+  };
+
   return (
     <div className=" bg-[#1b8daf] min-h-screen flex items-center justify-end relative " style={{
       backdropFilter: 'blur(10px)',
@@ -19,7 +64,7 @@ function Create_password() {
       </div>
       <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[38rem]">
         <div className="max-w-md mx-auto ">
-          <form>
+          <form onSubmit={handleRegister}>
             <div className="mb-4">
               <div className="mb-5">
                 <div className="text-center mb-4">
@@ -40,12 +85,13 @@ function Create_password() {
                     id="email"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="Email"
+                    name="email"
                     required
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="password" className="block mb-2 text-sm text-gray-600">
+                <label htmlFor="name" className="block mb-2 text-sm text-gray-600">
                   User
                 </label>
                 <div className="relative">
@@ -53,10 +99,11 @@ function Create_password() {
                     👨‍💼
                   </span>
                   <input
-                    type="username"
-                    id="password"
+                    type="text"
+                    id="name"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="Username"
+                    name='name'
                     required
                   />
                 </div>
@@ -74,6 +121,7 @@ function Create_password() {
                     id="password"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="******"
+                    name='password'
                     required
                   />
                 </div>
@@ -88,9 +136,10 @@ function Create_password() {
                   </span>
                   <input
                     type="password"
-                    id="password"
+                    id="password_confirmation"
                     className="w-full p-2 pl-8 border rounded"
                     placeholder="******"
+                    name='password_confirmation'
                     required
                   />
                 </div>
@@ -106,18 +155,20 @@ function Create_password() {
                   </span>
                   <input
                     type="text"
-                    id="Description"
+                    id="description"
                     className="w-full p-2 pl-8 border rounded"
+                    name='description'
                     placeholder="Place your description"
                   />
                 </div>
               </div>
             </div>
 
-            <a href="/Web" type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
+            <button type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
               Create Account
-            </a>
+            </button>
           </form>
+          <ToastContainer />
 
           <div className="flex justify-center mt-4 space-x-4">
             <a href="/Login" className="text-sm text-black  transition-transform transform hover:scale-105">

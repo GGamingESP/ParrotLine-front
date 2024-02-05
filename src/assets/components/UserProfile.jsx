@@ -1,21 +1,18 @@
 // UserProfile.js
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FaCog } from "react-icons/fa";
 
 function UserProfile() {
-  // ... tu lógica para el perfil
   const [isHovered, setHovered] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
-
-
-
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isNameEditMode, setNameEditMode] = useState(false);
   const [isDescriptionEditMode, setDescriptionEditMode] = useState(false);
-  const [name, setName] = useState('John'); // Cambia 'Tu Nombre' por el nombre actual
-  const [description, setDescription] = useState('Tu Descripción'); // Cambia 'Tu Descripción' por la descripción actual // Cambia 'Tu Descripción' por la descripción actual
+  const [name, setName] = useState('John');
+  const [description, setDescription] = useState('Tu Descripción');
+  const [image, setImage] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  const [setSelectedFile] = useState(null);
 
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
@@ -36,10 +33,23 @@ function UserProfile() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      // Enviar automáticamente la imagen como mensaje
     }
   };
 
+  const handleSaveChanges = () => {
+    // Aquí puedes enviar la nueva imagen al servidor y actualizar la URL en el estado
+    // También puedes enviar el nuevo nombre y descripción si es necesario
+    setEditMode(false);
+  };
+
+  useEffect(() => {
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    if (user) {
+      setName(user.user.name);
+      setDescription(user.user.description);
+      setImage(user.user.image);
+    }
+  }, []);
 
 
   return (
@@ -48,7 +58,7 @@ function UserProfile() {
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
           onClick={() => document.getElementById('modal_1').showModal()}
-          src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+          src={image}
           alt="User profile"
         />
       </div>
@@ -82,7 +92,7 @@ function UserProfile() {
                   onClick={() => setEditMode(!isEditMode)}
                 >
                   <img
-                    src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                    src={image}
                     alt="Avatar Logo"
                     className={`w-20 h-20 rounded-full object-cover ${isHovered ? 'filter blur-sm' : ''}`}
 
@@ -97,11 +107,16 @@ function UserProfile() {
 
                   {isEditMode && (
                     <div className="absolute bg-white p-4 border rounded">
-                      {/* Contenido para cambiar la foto */}
                       <label className="block mb-2 text-gray-600 cursor-pointer">
                         Seleccionar archivo
                         <input type="file" className="hidden" onChange={handleFileChange} />
                       </label>
+                      <button
+                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
+                        onClick={handleSaveChanges}
+                      >
+                        Guardar cambios
+                      </button>
                     </div>
                   )}
                 </div>

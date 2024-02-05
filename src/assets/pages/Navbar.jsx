@@ -7,6 +7,7 @@ function Navbar() {
 
     const toggleDarkMode = () => {
         setIsDarkMode(!isDarkMode);
+        console.log
     }
 
     return (

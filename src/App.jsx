@@ -9,7 +9,6 @@ import capa from './assets/images/capa.png';
 import Navbar from "./assets/pages/Navbar";
 import Footer from './assets/pages/Footer';
 
-
 function App() {
   return (
     <>

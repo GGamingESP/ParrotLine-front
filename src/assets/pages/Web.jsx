@@ -5,8 +5,21 @@ import SearchBar from "../components/SearchBar";
 import AddFriendGroup from "../components/AddFriendGroup";
 import UserChannels from "../components/UserChannels";
 import ChatMessages from "../components/ChatMessages";
+import { useEffect } from 'react';
+
+
+
 
 function Web() {
+
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem("currentUser"));
+        if (user) {
+            // Logica
+        }else{
+            window.location.href = "/Login"
+        }
+    });
 
     return (
         <div className="flex h-screen">
@@ -23,7 +36,6 @@ function Web() {
                 {/* Lista de canales de usuarios */}
                 <UserChannels />
 
-                <div className="flex-1"></div>
 
                 <div className="  border-t pt-4 items-center justify-center">
                     <img src={logoImage} alt="Logotipo" className="flex-1 w-32 " />
