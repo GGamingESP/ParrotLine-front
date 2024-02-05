@@ -61,7 +61,7 @@ function ChatMessages() {
 
     // Limpiar la selección de archivo
     setSelectedFile(null);
-    
+
   };
 
   const sendMessage = () => {
@@ -106,9 +106,23 @@ function ChatMessages() {
         </div>
 
         {/* Icono de opciones al final */}
-        <div>
-          {/* Puedes reemplazar FaEllipsisV con el icono que desees */}
-          <FaEllipsisV className="text-white" size={20} />
+
+
+        <input id="my-drawer-4" type="checkbox" className="drawer-toggle y" />
+        <div className="drawer-content ">
+          {/* Page content here */}
+          <label htmlFor="my-drawer-4" className="btn btn-primary">
+       
+            <FaEllipsisV className="text-white" size={20} />
+          </label>
+        </div>
+        <div className="drawer-side z-50">
+          <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
+          <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
+            {/* Sidebar content here */}
+            <li><a>Sidebar Item 1</a></li>
+            <li><a>Sidebar Item 2</a></li>
+          </ul>
         </div>
       </div>
 
@@ -208,10 +222,10 @@ function ChatMessages() {
                 sendMessage(); // Envía el mensaje
               }
             }}
-            placeholder="Escribe un mensaje..."
+            placeholder="Write a Message..."
             className="flex-1 border border-gray-300 p-2 rounded ml-2 focus:outline-none"
           />
-          
+
           {/* Botón para enviar mensaje */}
           <button
             type="submit"

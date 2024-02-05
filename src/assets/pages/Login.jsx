@@ -58,7 +58,7 @@ function Login() {
                                         id="password"
                                         className="w-full p-2 pl-8 border rounded"
                                         placeholder="******"
-                                        
+                                        required
                                     />
                                 </div>
                             </div>
