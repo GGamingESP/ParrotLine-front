@@ -7,24 +7,36 @@ function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
-  const { currentGroup } = useContext(MyCurrentGroupContext);
+  // const [mensaje, setMensaje] = useState([]);
+  const [mensajeData, setMensajeData] = useState([]);
+  const currentGroup = useContext(MyCurrentGroupContext);
+
+  const user = JSON.parse(sessionStorage.getItem("currentUser"));
+
+  // useEffect para cuando se cambia de grupo
+
+  const fetchMessages = async () => {
+    if (currentGroup && currentGroup.id) {
+      const response = await axios.get(
+        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log(response);
+      setMessages(response.data.data);
+      setMensajeData(response.data.data);
+    }
+  };
 
   useEffect(() => {
-    // Obtener los mensajes del grupo actual seleccionado
-    if (currentGroup && currentGroup.id) {
-      axios.get(`https://ivan.informaticamajada.es/api/group/${currentGroup.id}/messages`, {
-        headers: {
-          'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-          'Content-Type': 'application/json'
-        }
-      })
-        .then(response => {
-          setMessages(response.data);
-        })
-        .catch(error => {
-          console.error('Error al obtener los mensajes del grupo:', error);
-        });
-    }
+    fetchMessages();
+    console.log(currentGroup);
   }, [currentGroup]); // Se ejecuta cada vez que el grupo actual seleccionado cambia
 
   const handleEmojiSelect = (emoji) => {
@@ -32,24 +44,73 @@ function ChatMessages() {
   };
 
   const emojiList = [
-    '\u{1F60A}', '\u{1F44D}', '\u{2764}', '\u{1F602}', '\u{1F389}', '\u{1F44B}', '\u{1F525}',
-    '\u{1F64C}', '\u{2B50}', '\u{1F914}', '\u{1F680}', '\u{1F4A1}', '\u{1F4DA}', '\u{1F3A8}',
-    '\u{1F468}', '\u{200D}', '\u{1F4BB}', '\u{1F6A6}', '\u{1F3A4}', '\u{1F4F7}', '\u{2615}',
-    '\u{1F917}'
+    "\u{1F60A}",
+    "\u{1F44D}",
+    "\u{2764}",
+    "\u{1F602}",
+    "\u{1F389}",
+    "\u{1F44B}",
+    "\u{1F525}",
+    "\u{1F64C}",
+    "\u{2B50}",
+    "\u{1F914}",
+    "\u{1F680}",
+    "\u{1F4A1}",
+    "\u{1F4DA}",
+    "\u{1F3A8}",
+    "\u{1F468}",
+    "\u{200D}",
+    "\u{1F4BB}",
+    "\u{1F6A6}",
+    "\u{1F3A4}",
+    "\u{1F4F7}",
+    "\u{2615}",
+    "\u{1F917}",
   ];
 
+  // useEffect(() => {
+  //   const drawMessages = () => {
+  //     setMensaje(
+  //       mensajeData.map((value) => {
+  //         <div className="chat chat-start">
+  //           <div className="chat-image avatar">
+  //             <div className="w-10 rounded-full">
+  //               <img
+  //                 alt="Tailwind CSS chat bubble component"
+  //                 src={
+  //                   value.image
+  //                     ? "https://ivan.informartica.es/" + value.image
+  //                     : "/public/default-user.png"
+  //                 }
+  //               />
+  //             </div>
+  //           </div>
+  //           <div className="chat-header">
+  //             {value.user_id == user.user.id ? user.user.name : "Chatero"}
+  //           </div>
+  //           <div className="chat-bubble">{value.text}</div>
+  //         </div>;
+  //       })
+  //     );
+  //   };
+  //   drawMessages();
+  //   // setMessages(initialMessages);
+  // }, [mensajeData]);
 
-
-  useEffect(() => {
-    const initialMessages = [
-      { user: "John", text: "Hola, ¿cómo estás?" },
-      { user: "Jane", text: "¡Hola! Estoy bien, ¿y tú?" },
-    ];
-
-    setMessages(initialMessages);
-  }, []);
-
-
+  const deleteMessage = (id) => {
+    axios.delete(`https://ivan.informaticamajada.es/api/message/${id}`,{
+      headers: {
+        Authorization: `Bearer ${
+          JSON.parse(sessionStorage.getItem("currentUser")).token
+        }`,
+        "Content-Type": "application/json",
+      },
+    }).then(function(response) {
+      fetchMessages();
+    }).catch(error => {
+      console.error(error);
+    })
+  }
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -59,13 +120,12 @@ function ChatMessages() {
     }
   };
 
-
   const sendMessageWithImage = (imageFile) => {
     // Obtener la hora actual
     const currentTime = new Date();
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
-    const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+    const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 
     // Crear el nuevo mensaje con la hora actual y la imagen
     const newMessage = {
@@ -81,7 +141,6 @@ function ChatMessages() {
 
     // Limpiar la selección de archivo
     setSelectedFile(null);
-
   };
 
   const sendMessage = () => {
@@ -90,7 +149,7 @@ function ChatMessages() {
       const currentTime = new Date();
       const hours = currentTime.getHours();
       const minutes = currentTime.getMinutes();
-      const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+      const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 
       // Crear el nuevo mensaje con la hora actual y el texto con emoji
       const newMessage = {
@@ -113,7 +172,11 @@ function ChatMessages() {
         {/* Perfil del usuario al que se habla */}
         <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
           <img
-            src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+            src={
+              currentGroup.image
+                ? "https://ivan.informaticamajada.es/" + currentGroup.image
+                : "/public/default-user.png"
+            }
             alt="Canal de Usuario"
             className="w-full h-full object-cover"
           />
@@ -121,78 +184,62 @@ function ChatMessages() {
 
         {/* Información del usuario */}
         <div className="flex-1">
-          <h2 className="text-lg font-semibold text-white">Jane</h2>
-          <p className="text-white text-sm pt-[-0.2em]">Descripcion</p>
+          <h2 className="text-lg font-semibold text-white">
+            {currentGroup.name}
+          </h2>
+          <p className="text-white text-sm pt-[-0.2em]">
+            {currentGroup.description}
+          </p>
         </div>
 
         {/* Icono de opciones al final */}
         <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className=" m-1"><FaEllipsisV className="text-white" size={21} /></div>
-          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-            <p>¿Quiere Eliminar este usuario?</p>
-            <button
-              className="py-1 bg-red-500 text-white rounded mr-2"
-            >
+          <div tabIndex={0} role="button" className=" m-1">
+            <FaEllipsisV className="text-white" size={21} />
+          </div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+          >
+            <p>¿Quiere Eliminar este usuario/Grupo?</p>
+            <button className="py-1 bg-red-500 text-white rounded mr-2">
               Aceptar
             </button>
-            <button
-              className=" py-1 bg-gray-300 text-gray-700 rounded"
-            >
+            <button className=" py-1 bg-gray-300 text-gray-700 rounded">
               Cancelar
             </button>
           </ul>
         </div>
-
       </div>
-
-
-
       <div className="overflow-y-auto max-h-[calc(100vh-64px)] pb-4 px-4">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`chat ${message.user === "John" ? "chat-end" : "chat-start"}`}
-          >
-            <div className="chat-image avatar">
-              <div className="w-10 rounded-full">
-                <img
-                  alt="Tailwind CSS chat bubble component"
-                  src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
-
-                />
-                )
-              </div>
-            </div>
-            <div className="chat-header">{message.user}</div>
-            {/* Contenido del mensaje */}
-
-            {message.text && (
-              <div className={`chat-bubble ${message.user === "John" ? "bg-green-500 text-white ml-auto" : ""}`}>
-                <p>{message.text}</p>
-
-              </div>
-            )}
-
-            {/* Contenido de la imagen adjunta */}
-            {message.file && (
-              <div className={`chat-bubble ${message.user === "John" ? "bg-green-500 text-white ml-auto" : ""}`}>
-                <div className="max-w-96 max-h-96 flex-shrink-0"> {/* Contenedor con tamaño máximo y sin encoger */}
+        {
+          mensajeData.map((value, index) => 
+            <div className={`chat ${value.user_id == user.user.id ? "chat-end": "chat-start"}`} key={index}>
+              <div className="chat-image avatar group">
+                <div className="w-10 rounded-full">
                   <img
-                    src={URL.createObjectURL(message.file)}
-                    alt="Imagen adjunta"
-                    className="w-full h-full object-cover"
+                    alt="user image"
+                    src={
+                      value.image
+                        ? "https://ivan.informartica.es/" + value.image
+                        : "/public/default-user.png"
+                    }
                   />
+                  
                 </div>
+                {value.user_id == user.user.id ? <button className="hidden group-hover:block text-black z-50 opacity-80" onClick={() => deleteMessage(value.id)}>X</button> : ""}
               </div>
-            )}
-            <span className="chat-time text-xs opacity-50">{message.time}</span>
-            <div className="chat-footer opacity-50">Seen</div>
-          </div>
-        ))}
+              <div className="chat-header">
+                {value.user_id == user.user.id ? user.user.name : "Chatero"}
+              </div>
+              <div className="chat-bubble">{value.text}</div>
+            </div>
+          )
+        }
+        
       </div>
-
-      <div className="flex-1"></div> {/* Espacio flexible para empujar el contenido hacia arriba */}
-
+      <div className="flex-1"></div>{" "}
+      {/* Espacio flexible para empujar el contenido hacia arriba */}
       <div className="flex justify-center items-center">
         <form
           action=""
@@ -203,7 +250,10 @@ function ChatMessages() {
           }}
         >
           {/* Icono de emoji */}
-          <button className="text-gray-500 p-2 hover:text-gray-700" onClick={() => document.getElementById('my_modal_2').showModal()}>
+          <button
+            className="text-gray-500 p-2 hover:text-gray-700"
+            onClick={() => document.getElementById("my_modal_2").showModal()}
+          >
             <FaSmile size={27} />
           </button>
 
@@ -211,7 +261,9 @@ function ChatMessages() {
           <dialog id="my_modal_2" className="modal">
             <div className="modal-box">
               <form method="dialog">
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  ✕
+                </button>
               </form>
               {emojiList.map((emoji, index) => (
                 <button
@@ -228,7 +280,6 @@ function ChatMessages() {
             </form>
           </dialog>
 
-
           {/* Input para texto */}
           <input
             type="text"
@@ -236,7 +287,7 @@ function ChatMessages() {
             onChange={(e) => setCurrentMessage(e.target.value)}
             onKeyDown={(e) => {
               // Verifica si la tecla presionada es Enter
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 e.preventDefault(); // Evita el comportamiento predeterminado (enviar formulario)
                 sendMessage(); // Envía el mensaje
               }
@@ -264,7 +315,10 @@ function ChatMessages() {
           />
 
           {/* Botón para abrir el selector de archivos */}
-          <label htmlFor="fileInput" className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-2">
+          <label
+            htmlFor="fileInput"
+            className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-2"
+          >
             <FaPlus size={27} />
           </label>
         </form>

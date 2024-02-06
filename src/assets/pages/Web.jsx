@@ -24,6 +24,14 @@ function Web() {
         }
     });
 
+    const actualizarEstadoGrupo = (nuevoEstado) => {
+        setMyGroups(nuevoEstado);
+    }
+
+    const actualizarEstadoCurrentGrupo = (nuevoEstado) => {
+        setCurrentGroup(nuevoEstado);
+    }
+
     return (
         <div className="flex h-screen">
             <MyGroupProvider value={MyGroups}>
@@ -39,7 +47,7 @@ function Web() {
                         <AddFriendGroup />
 
                         {/* Lista de canales de usuarios */}
-                        <UserChannels userGroup={setMyGroups} currentGroup={setCurrentGroup}  />
+                        <UserChannels userGroup={actualizarEstadoGrupo} currentGroup={actualizarEstadoCurrentGrupo}  />
                     </div >
                     {/* Apartado de mensajes e input */}
                     <ChatMessages />
