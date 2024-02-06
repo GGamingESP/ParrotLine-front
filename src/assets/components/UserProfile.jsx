@@ -1,6 +1,7 @@
 // UserProfile.js
 import { useState, useEffect } from "react";
 import { FaCog } from "react-icons/fa";
+import axios from "axios";
 
 function UserProfile() {
   const [isHovered, setHovered] = useState(false);
@@ -29,17 +30,29 @@ function UserProfile() {
     setDescription(e.target.value);
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      setSelectedFile(file);
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+  
+        // Puedes ajustar la URL del servidor donde se subirá la imagen durante el registro
+        const response = await axios.post(URL, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+  
+        // La respuesta del servidor debería contener la nueva URL de la imagen
+        const newImageUrl = response.data.imageUrl;
+  
+        // Actualizar la URL de la imagen en el estado
+        setImage(newImageUrl);
+      } catch (error) {
+        console.error('Error al subir la imagen durante el registro:', error);
+      }
     }
-  };
-
-  const handleSaveChanges = () => {
-    // Aquí puedes enviar la nueva imagen al servidor y actualizar la URL en el estado
-    // También puedes enviar el nuevo nombre y descripción si es necesario
-    setEditMode(false);
   };
 
   useEffect(() => {
@@ -63,7 +76,7 @@ function UserProfile() {
         />
       </div>
       <div className="ml-4">
-        <h3 className=" text-3x1 text-white font-semibold">John</h3>
+        <h3 className=" text-3x1 text-white font-semibold">{name}</h3>
         {/* Botón de ajustes */}
         <div className="ml-4 relative">
           <button className="text-white hover:text-gray-700 " onClick={() => document.getElementById('modal_1').showModal()}>
@@ -111,12 +124,6 @@ function UserProfile() {
                         Seleccionar archivo
                         <input type="file" className="hidden" onChange={handleFileChange} />
                       </label>
-                      <button
-                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
-                        onClick={handleSaveChanges}
-                      >
-                        Guardar cambios
-                      </button>
                     </div>
                   )}
                 </div>
