@@ -1,5 +1,3 @@
-import logoImage from '../images/loro.png'
-
 import UserProfile from "../components/UserProfile";
 import SearchBar from "../components/SearchBar";
 import AddFriendGroup from "../components/AddFriendGroup";
@@ -7,16 +5,13 @@ import UserChannels from "../components/UserChannels";
 import ChatMessages from "../components/ChatMessages";
 import { useEffect } from 'react';
 
-
-
-
 function Web() {
 
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem("currentUser"));
         if (user) {
             // Logica
-        }else{
+        } else {
             window.location.href = "/Login"
         }
     });
@@ -35,18 +30,10 @@ function Web() {
 
                 {/* Lista de canales de usuarios */}
                 <UserChannels />
-
-
-                <div className="  border-t pt-4 items-center justify-center">
-                    <img src={logoImage} alt="Logotipo" className="flex-1 w-32 " />
-                </div>
             </div >
-
             {/* Apartado de mensajes e input */}
             <ChatMessages />
-
         </div >
     );
 }
-
 export default Web;

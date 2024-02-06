@@ -106,24 +106,23 @@ function ChatMessages() {
         </div>
 
         {/* Icono de opciones al final */}
-
-
-        <input id="my-drawer-4" type="checkbox" className="drawer-toggle y" />
-        <div className="drawer-content ">
-          {/* Page content here */}
-          <label htmlFor="my-drawer-4" className="btn btn-primary">
-       
-            <FaEllipsisV className="text-white" size={20} />
-          </label>
-        </div>
-        <div className="drawer-side z-50">
-          <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
-          <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-            {/* Sidebar content here */}
-            <li><a>Sidebar Item 1</a></li>
-            <li><a>Sidebar Item 2</a></li>
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className=" m-1"><FaEllipsisV className="text-white" size={21} /></div>
+          <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+            <p>¿Quiere Eliminar este usuario?</p>
+            <button
+              className="py-1 bg-red-500 text-white rounded mr-2"
+            >
+              Aceptar
+            </button>
+            <button
+              className=" py-1 bg-gray-300 text-gray-700 rounded"
+            >
+              Cancelar
+            </button>
           </ul>
         </div>
+
       </div>
 
 

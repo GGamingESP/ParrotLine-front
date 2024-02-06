@@ -4,7 +4,7 @@ import { FaCog } from "react-icons/fa";
 
 function UserProfile() {
   const [isHovered, setHovered] = useState(false);
-  const [isEditMode, setEditMode] = useState(false);
+  const [setEditMode] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isNameEditMode, setNameEditMode] = useState(false);
   const [isDescriptionEditMode, setDescriptionEditMode] = useState(false);
@@ -12,7 +12,6 @@ function UserProfile() {
   const [description, setDescription] = useState('Tu Descripción');
   const [image, setImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
 
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
@@ -36,11 +35,76 @@ function UserProfile() {
     }
   };
 
+  const handleImageChange = () => {
+    if (selectedFile) {
+      const imageURL = URL.createObjectURL(selectedFile);
+      setImage(imageURL);
+    }
+  };
+
   const handleSaveChanges = () => {
-    // Aquí puedes enviar la nueva imagen al servidor y actualizar la URL en el estado
-    // También puedes enviar el nuevo nombre y descripción si es necesario
+
+    // Actualizar el sessionStorage después de la respuesta exitosa del servidor
+    const updatedUser = {
+      ...JSON.parse(sessionStorage.getItem("currentUser")),
+      user: {
+        ...JSON.parse(sessionStorage.getItem("currentUser")).user,
+        name,
+        description,
+        image: selectedFile ? URL.createObjectURL(selectedFile) : image,
+      },
+    };
+    sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+    // Finalizar el modo de edición
     setEditMode(false);
   };
+
+  const handleUpdateName = () => {
+    // Lógica para enviar cambios al servidor
+    // ...
+
+    // Actualizar el sessionStorage después de la respuesta exitosa del servidor
+    const updatedUser = {
+      ...JSON.parse(sessionStorage.getItem("currentUser")),
+      user: {
+        ...JSON.parse(sessionStorage.getItem("currentUser")).user,
+        name,
+      },
+    };
+    sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+    // Finalizar el modo de edición
+    setNameEditMode(false);
+  };
+
+  const handleUpdateDescription = () => {
+    // Lógica para enviar cambios al servidor
+    // ...
+
+    // Actualizar el sessionStorage después de la respuesta exitosa del servidor
+    const updatedUser = {
+      ...JSON.parse(sessionStorage.getItem("currentUser")),
+      user: {
+        ...JSON.parse(sessionStorage.getItem("currentUser")).user,
+        description,
+      },
+    };
+    sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+    // Finalizar el modo de edición
+    setDescriptionEditMode(false);
+  };
+
+  const handleLogout = () => {
+    // Elimina el token y cualquier otra información de sesión
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('currentUser');
+
+    // Redirige a la página de inicio de sesión
+    window.location.href = "/Login"
+  };
+
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -62,12 +126,12 @@ function UserProfile() {
           alt="User profile"
         />
       </div>
-      <div className="ml-4">
-        <h3 className=" text-3x1 text-white font-semibold">John</h3>
+      <div className="ml-4 flex items-center">
+        <h3 className=" text-3x1 text-white font-semibold">{name}</h3>
         {/* Botón de ajustes */}
-        <div className="ml-4 relative">
-          <button className="text-white hover:text-gray-700 " onClick={() => document.getElementById('modal_1').showModal()}>
-            <FaCog />
+        <div className="ml-24 relative"> {/* Ajusta el valor de ml-2 según tus preferencias */}
+          <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_1').showModal()}>
+            <FaCog size={"20"}/ >
           </button>
 
           {/* Modal */}
@@ -89,35 +153,31 @@ function UserProfile() {
                   className="relative group"
                   onMouseEnter={() => setHovered(true)}
                   onMouseLeave={() => setHovered(false)}
-                  onClick={() => setEditMode(!isEditMode)}
                 >
+                  <input
+                    type="file"
+                    id="fileInput"
+                    className="hidden"
+                    onChange={(e) => {
+                      handleFileChange(e);
+                      handleImageChange(); // Actualiza la imagen al seleccionar un archivo
+                      handleSaveChanges(); // Envía automáticamente la imagen al seleccionar un archivo
+                    }}
+                  />
                   <img
                     src={image}
                     alt="Avatar Logo"
                     className={`w-20 h-20 rounded-full object-cover ${isHovered ? 'filter blur-sm' : ''}`}
-
                   />
 
-
                   {isHovered && (
-                    <span className="absolute top-0 right-0 m-2 cursor-pointer text-xl text-gray-500" title="Personalizar">
+                    <span
+                      className="absolute top-0 right-0 m-2 cursor-pointer text-xl text-gray-500"
+                      title="Personalizar"
+                      onClick={() => document.getElementById('fileInput').click()}
+                    >
                       🎨
                     </span>
-                  )}
-
-                  {isEditMode && (
-                    <div className="absolute bg-white p-4 border rounded">
-                      <label className="block mb-2 text-gray-600 cursor-pointer">
-                        Seleccionar archivo
-                        <input type="file" className="hidden" onChange={handleFileChange} />
-                      </label>
-                      <button
-                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
-                        onClick={handleSaveChanges}
-                      >
-                        Guardar cambios
-                      </button>
-                    </div>
                   )}
                 </div>
               </div>
@@ -132,7 +192,7 @@ function UserProfile() {
                       className="w-full border p-2 rounded"
                       placeholder="Escribe tu nombre..."
                     />
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleNameEdit}>
+                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleUpdateName}>
                       Aceptar
                     </button>
                   </>
@@ -157,7 +217,7 @@ function UserProfile() {
                       className="w-full border p-2 rounded"
                       placeholder="Escribe tu descripción..."
                     />
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleDescriptionEdit}>
+                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleUpdateDescription}>
                       Aceptar
                     </button>
                   </div>
