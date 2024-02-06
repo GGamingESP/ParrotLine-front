@@ -1,11 +1,11 @@
 // UserProfile.js
 import { useState, useEffect } from "react";
 import { FaCog } from "react-icons/fa";
-import axios from "axios";
-
+import axios
+  from "axios";
 function UserProfile() {
   const [isHovered, setHovered] = useState(false);
-  const [setEditMode] = useState(false);
+  const [isEditMode, setEditMode] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isNameEditMode, setNameEditMode] = useState(false);
   const [isDescriptionEditMode, setDescriptionEditMode] = useState(false);
@@ -13,7 +13,7 @@ function UserProfile() {
   const [description, setDescription] = useState('Tu Descripción');
   const [image, setImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-
+  
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
   };
@@ -33,18 +33,16 @@ function UserProfile() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
+      handleImageChange(file); // Pasar el archivo a handleImageChange
+      handleSaveChanges(); // Llamar a handleSaveChanges después de seleccionar el archivo
     }
   };
 
   const handleSaveChanges = () => {
-    // Aquí puedes enviar la nueva imagen al servidor y actualizar la URL en el estado
-    // También puedes enviar el nuevo nombre y descripción si es necesario
     setEditMode(false);
   };
 
   const handleUpdateName = () => {
-    // Lógica para enviar cambios al servidor
-    // ...
 
     // Actualizar el sessionStorage después de la respuesta exitosa del servidor
     const updatedUser = {
@@ -58,6 +56,42 @@ function UserProfile() {
 
     // Finalizar el modo de edición
     setNameEditMode(false);
+  };
+
+  const handleImageChange = (file) => {
+    // Verificar el tamaño del archivo
+    if (file.size <= 2 * 1024 * 1024) { // 2 megabytes
+      const imageURL = URL.createObjectURL(file);
+      setImage(imageURL);
+      // Actualizar imagen en la sesión
+      const user = JSON.parse(sessionStorage.getItem("currentUser"));
+      const updatedUser = { ...user, user: { ...user.user, image: imageURL } };
+      sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+
+      // Subir la imagen al servidor
+      const formData = new FormData();
+      formData.append('imagen', file);
+      let token = user.token
+      axios.post('https://ivan.informaticamajada.es/api/saveUserImage', formData, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+        .then(response => {
+          // Manejar la respuesta del servidor
+          if (response.ok) {
+            console.log('Imagen subida correctamente.');
+          } else {
+            console.error('Error al subir la imagen:', response.statusText);
+          }
+        })
+        .catch(error => {
+          console.error('Error al subir la imagen:', error);
+        });
+    } else {
+      alert('La imagen excede el límite de tamaño de 2 megabytes.');
+    }
   };
 
   const handleUpdateDescription = () => {
@@ -109,11 +143,11 @@ function UserProfile() {
         />
       </div>
       <div className="ml-4">
-        <h3 className=" text-3x1 text-white font-semibold">John</h3>
+        <h3 className=" text-3x1 text-white font-semibold">{name}</h3>
         {/* Botón de ajustes */}
         <div className="ml-24 relative"> {/* Ajusta el valor de ml-2 según tus preferencias */}
           <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_1').showModal()}>
-            <FaCog size={"20"}/ >
+            <FaCog size={"20"} />
           </button>
 
           {/* Modal */}
@@ -161,7 +195,6 @@ function UserProfile() {
                       🎨
                     </span>
                   )}
-
                   {isEditMode && (
                     <div className="absolute bg-white p-4 border rounded">
                       <label className="block mb-2 text-gray-600 cursor-pointer">
