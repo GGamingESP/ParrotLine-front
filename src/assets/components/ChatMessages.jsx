@@ -1,11 +1,31 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext  } from "react";
 import { FaSmile, FaPlus, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
+import MyCurrentGroupContext from '../components/CurrentGroupContext';
+import axios from 'axios';
 
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const { currentGroup } = useContext(MyCurrentGroupContext);
 
+  useEffect(() => {
+    // Obtener los mensajes del grupo actual seleccionado
+    if (currentGroup && currentGroup.id) {
+      axios.get(`https://ivan.informaticamajada.es/api/group/${currentGroup.id}/messages`, {
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+        .then(response => {
+          setMessages(response.data);
+        })
+        .catch(error => {
+          console.error('Error al obtener los mensajes del grupo:', error);
+        });
+    }
+  }, [currentGroup]); // Se ejecuta cada vez que el grupo actual seleccionado cambia
 
   const handleEmojiSelect = (emoji) => {
     setCurrentMessage((prevMessage) => prevMessage + emoji);

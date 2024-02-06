@@ -1,10 +1,19 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
 import logoImage from '../images/loro.png';
 
-function UserChannels() {
+import MyCurrentGroupContext from '../components/CurrentGroupContext';
+
+function UserChannels(userGroup, currentGroup) {
   const [userGroups, setUserGroups] = useState([]);
   const [grouphtml, setgrouphtml] = useState([]);
+  const { setCurrentGroup } = useContext(MyCurrentGroupContext);
+
+  const handleGroupClick = (group) => {
+    setCurrentGroup(group);
+    currentGroup(group);
+  };
+  
 
   useEffect(() => {
     // Realizar la solicitud al servidor para obtener los grupos del usuario
@@ -19,7 +28,7 @@ function UserChannels() {
       setUserGroups(response.data);
 
       let data = response.data.data.map(group => (
-        <li key={group.id} className="mb-4">
+        <li key={group.id} className="mb-4" onClick={() => handleGroupClick(group)}>
           <div className="flex items-center">
             <div className="w-8 h-8 rounded-full overflow-hidden">
               <img
@@ -36,6 +45,7 @@ function UserChannels() {
         </li>
       ))
       setgrouphtml(data)
+      userGroup(response.data.data)
     })
     .catch(error => {
       console.error('Error al obtener los grupos del usuario:', error);
