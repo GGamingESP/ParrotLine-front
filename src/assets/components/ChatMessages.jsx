@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext  } from "react";
 import { FaSmile, FaPlus, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
+import { IoReload } from "react-icons/io5";
 import MyCurrentGroupContext from '../components/CurrentGroupContext';
 import axios from 'axios';
 
@@ -7,6 +8,7 @@ function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
+  const [mediaDesp, setMediaDesp] = useState(false);
   // const [mensaje, setMensaje] = useState([]);
   const [mensajeData, setMensajeData] = useState([]);
   const currentGroup = useContext(MyCurrentGroupContext);
@@ -116,28 +118,54 @@ function ChatMessages() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      sendMessageWithImage(file);
+      setTimeout(()=>{sendMessageWithImage();}, 2000)
     }
   };
 
-  const sendMessageWithImage = (imageFile) => {
+  const sendMessageWithImage = () => {
     // Obtener la hora actual
-    const currentTime = new Date();
-    const hours = currentTime.getHours();
-    const minutes = currentTime.getMinutes();
-    const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+    // const currentTime = new Date();
+    // const hours = currentTime.getHours();
+    // const minutes = currentTime.getMinutes();
+    // const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 
     // Crear el nuevo mensaje con la hora actual y la imagen
-    const newMessage = {
-      user: "John",
-      text: "",
-      file: imageFile,
-      time: formattedTime,
-      timestamp: currentTime.getTime(), // Guardar el timestamp del mensaje
-    };
+    // const newMessage = {
+    //   user: "John",
+    //   text: "",
+    //   file: imageFile,
+    //   time: formattedTime,
+    //   timestamp: currentTime.getTime(), // Guardar el timestamp del mensaje
+    // };
+    const formData = new FormData();
+
+    formData.append("user_id", user.user.id);
+    formData.append("group_id", currentGroup.id);
+    formData.append("text", " ");
+    formData.append("imagen", selectedFile)
+
+    console.log(formData)
+
+    axios.post(`https://ivan.informaticamajada.es/api/createMessageWithImage`, {
+      user_id: user.user.id,
+      group_id: currentGroup.id,
+      text: " ",
+      imagen: selectedFile
+    },{
+      headers: {
+        "Authorization": `Bearer ${
+          JSON.parse(sessionStorage.getItem("currentUser")).token
+        }`,
+        "Content-Type": "application/json",
+      },
+    }).then(function(response) {
+      fetchMessages();
+    }).catch(error => {
+      console.error(error);
+    })
 
     // Agregar el mensaje al estado
-    setMessages([...messages, newMessage]);
+    // setMessages([...messages, newMessage]);
 
     // Limpiar la selección de archivo
     setSelectedFile(null);
@@ -146,25 +174,43 @@ function ChatMessages() {
   const sendMessage = () => {
     if (currentMessage.trim() !== "") {
       // Obtener la hora actual
-      const currentTime = new Date();
-      const hours = currentTime.getHours();
-      const minutes = currentTime.getMinutes();
-      const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+      // const currentTime = new Date();
+      // const hours = currentTime.getHours();
+      // const minutes = currentTime.getMinutes();
+      // const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
 
-      // Crear el nuevo mensaje con la hora actual y el texto con emoji
-      const newMessage = {
-        user: "John",
-        text: currentMessage,
-        time: formattedTime,
-      };
+      // // Crear el nuevo mensaje con la hora actual y el texto con emoji
+      // const newMessage = {
+      //   user: "John",
+      //   text: currentMessage,
+      //   time: formattedTime,
+      // };
 
-      // Agregar el mensaje al estado
-      setMessages([...messages, newMessage]);
+      axios.post(`https://ivan.informaticamajada.es/api/message`, {
+      user_id: user.user.id,
+      group_id: currentGroup.id,
+      text: currentMessage
+        },{
+      headers: {
+        "Authorization": `Bearer ${
+          JSON.parse(sessionStorage.getItem("currentUser")).token
+        }`,
+        'Content-Type': 'application/json'
+      },
+      }).then(function(response) {
+        fetchMessages();
+      }).catch(error => {
+        console.error(error);
+      })
 
       // Limpiar el campo de mensaje actual y el emoji seleccionado
       setCurrentMessage("");
     }
   };
+
+  // setInterval( async () => {
+  //   await fetchMessages();
+  // }, 5000)
 
   return (
     <div className="flex-1 flex flex-col bg-white ">
@@ -190,6 +236,9 @@ function ChatMessages() {
           <p className="text-white text-sm pt-[-0.2em]">
             {currentGroup.description}
           </p>
+        </div>
+        <div className=" items-center">
+          <button className="text-white me-4 text-xl" size={27} onClick={() => {fetchMessages()}}><IoReload /></button>
         </div>
 
         {/* Icono de opciones al final */}
@@ -240,7 +289,7 @@ function ChatMessages() {
       </div>
       <div className="flex-1"></div>{" "}
       {/* Espacio flexible para empujar el contenido hacia arriba */}
-      <div className="flex justify-center items-center">
+      <div className="flex justify-center items-center bg-[#4aa88f]">
         <form
           action=""
           className="flex w-full bg-[#4aa88f] p-2"
@@ -304,24 +353,23 @@ function ChatMessages() {
           >
             <FaPaperPlane size={20} />
           </button>
-
-          {/* Input para seleccionar archivos */}
-          <input
+        </form>
+        {/* Input para seleccionar archivos */}
+        <input
             type="file"
             accept="image/*, audio/*, video/*"
             onChange={handleFileChange}
             className="hidden"
-            id="fileInput"
+            id="fileInputImage"
           />
 
           {/* Botón para abrir el selector de archivos */}
           <label
-            htmlFor="fileInput"
+            htmlFor="fileInputImage"
             className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-2"
           >
             <FaPlus size={27} />
           </label>
-        </form>
       </div>
     </div>
   );
