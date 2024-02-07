@@ -29,12 +29,40 @@ function ChatMessages() {
             "Content-Type": "application/json",
           },
         }
-      );
-      console.log(response);
-      setMessages(response.data.data);
-      setMensajeData(response.data.data);
+      ).then(function(response){
+        setMessages(response.data.data);
+        setMensajeData(response.data.data);
+        console.log(response);
+        setTimeout(() => {fetchMessages()}, 5000)
+      });
+      
     }
   };
+
+  const fetchMessagesNoRepit = async () => {
+    if (currentGroup && currentGroup.id) {
+      const response = await axios.get(
+        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(function(response){
+        setMessages(response.data.data);
+        setMensajeData(response.data.data);
+        console.log(response);
+      });
+      
+    }
+  };
+
+  // setInterval(async () => {
+  //   await fetchMessages();
+  // }, 3000)
 
   useEffect(() => {
     fetchMessages();
@@ -159,7 +187,7 @@ function ChatMessages() {
         "Content-Type": "application/json",
       },
     }).then(function(response) {
-      fetchMessages();
+      fetchMessagesNoRepit();
     }).catch(error => {
       console.error(error);
     })

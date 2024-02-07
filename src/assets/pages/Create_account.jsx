@@ -62,7 +62,7 @@ function Create_password() {
         </div>
         <img src={parrot4} alt="Descripción de la imagen" className="w-40 hidden md:block" />
       </div>
-      <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[38rem]">
+      <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[42rem]">
         <div className="max-w-md mx-auto ">
           <form onSubmit={handleRegister}>
             <div className="mb-4">
