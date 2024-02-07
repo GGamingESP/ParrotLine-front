@@ -1,8 +1,9 @@
-import { useEffect, useState, useContext  } from "react";
-import { FaSmile, FaPlus, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
+import { useEffect, useState, useContext } from "react";
+import { FaSmile, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
 import { IoReload } from "react-icons/io5";
 import MyCurrentGroupContext from '../components/CurrentGroupContext';
 import axios from 'axios';
+import { FcAddImage } from "react-icons/fc";
 
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
@@ -23,19 +24,18 @@ function ChatMessages() {
         `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
         {
           headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
             "Content-Type": "application/json",
           },
         }
-      ).then(function(response){
+      ).then(function (response) {
         setMessages(response.data.data);
         setMensajeData(response.data.data);
         console.log(response);
-        setTimeout(() => {fetchMessages()}, 5000)
+        setTimeout(() => { fetchMessages() }, 5000)
       });
-      
+
     }
   };
 
@@ -45,18 +45,17 @@ function ChatMessages() {
         `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
         {
           headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
             "Content-Type": "application/json",
           },
         }
-      ).then(function(response){
+      ).then(function (response) {
         setMessages(response.data.data);
         setMensajeData(response.data.data);
         console.log(response);
       });
-      
+
     }
   };
 
@@ -128,14 +127,13 @@ function ChatMessages() {
   // }, [mensajeData]);
 
   const deleteMessage = (id) => {
-    axios.delete(`https://ivan.informaticamajada.es/api/message/${id}`,{
+    axios.delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
       headers: {
-        Authorization: `Bearer ${
-          JSON.parse(sessionStorage.getItem("currentUser")).token
-        }`,
+        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+          }`,
         "Content-Type": "application/json",
       },
-    }).then(function(response) {
+    }).then(function (response) {
       fetchMessages();
     }).catch(error => {
       console.error(error);
@@ -146,7 +144,7 @@ function ChatMessages() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setTimeout(()=>{sendMessageWithImage();}, 2000)
+      setTimeout(() => { sendMessageWithImage(); }, 2000)
     }
   };
 
@@ -179,14 +177,13 @@ function ChatMessages() {
       group_id: currentGroup.id,
       text: " ",
       imagen: selectedFile
-    },{
+    }, {
       headers: {
-        "Authorization": `Bearer ${
-          JSON.parse(sessionStorage.getItem("currentUser")).token
-        }`,
+        "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+          }`,
         "Content-Type": "application/json",
       },
-    }).then(function(response) {
+    }).then(function (response) {
       fetchMessagesNoRepit();
     }).catch(error => {
       console.error(error);
@@ -215,17 +212,16 @@ function ChatMessages() {
       // };
 
       axios.post(`https://ivan.informaticamajada.es/api/message`, {
-      user_id: user.user.id,
-      group_id: currentGroup.id,
-      text: currentMessage
-        },{
-      headers: {
-        "Authorization": `Bearer ${
-          JSON.parse(sessionStorage.getItem("currentUser")).token
-        }`,
-        'Content-Type': 'application/json'
-      },
-      }).then(function(response) {
+        user_id: user.user.id,
+        group_id: currentGroup.id,
+        text: currentMessage
+      }, {
+        headers: {
+          "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+          'Content-Type': 'application/json'
+        },
+      }).then(function (response) {
         fetchMessages();
       }).catch(error => {
         console.error(error);
@@ -266,7 +262,7 @@ function ChatMessages() {
           </p>
         </div>
         <div className=" items-center">
-          <button className="text-white me-4 text-xl" size={27} onClick={() => {fetchMessages()}}><IoReload /></button>
+          <button className="text-white me-4 text-xl" size={27} onClick={() => { fetchMessages() }}><IoReload /></button>
         </div>
 
         {/* Icono de opciones al final */}
@@ -290,8 +286,8 @@ function ChatMessages() {
       </div>
       <div className="overflow-y-auto max-h-[calc(100vh-64px)] pb-4 px-4">
         {
-          mensajeData.map((value, index) => 
-            <div className={`chat ${value.user_id == user.user.id ? "chat-end": "chat-start"}`} key={index}>
+          mensajeData.map((value, index) =>
+            <div className={`chat ${value.user_id == user.user.id ? "chat-end" : "chat-start"}`} key={index}>
               <div className="chat-image avatar group">
                 <div className="w-10 rounded-full">
                   <img
@@ -302,7 +298,7 @@ function ChatMessages() {
                         : "/public/default-user.png"
                     }
                   />
-                  
+
                 </div>
                 {value.user_id == user.user.id ? <button className="hidden group-hover:block text-black z-50 opacity-80" onClick={() => deleteMessage(value.id)}>X</button> : ""}
               </div>
@@ -313,7 +309,7 @@ function ChatMessages() {
             </div>
           )
         }
-        
+
       </div>
       <div className="flex-1"></div>{" "}
       {/* Espacio flexible para empujar el contenido hacia arriba */}
@@ -370,34 +366,39 @@ function ChatMessages() {
               }
             }}
             placeholder="Write a Message..."
-            className="flex-1 border border-gray-300 p-2 rounded ml-2 focus:outline-none"
+            className="flex-1 border border-gray-300 p-2 rounded mr-2 mt-1 focus:outline-none"
           />
 
           {/* Botón para enviar mensaje */}
           <button
             type="submit"
             onClick={sendMessage}
-            className="bg-blue-500 text-white p-2 rounded ml-2 hover:bg-blue-600"
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none mt-1 transition-transform transform hover:scale-105"
           >
-            <FaPaperPlane size={20} />
+            <div className="mr-1">
+              <FaPaperPlane size={20} />
+            </div>
           </button>
+
         </form>
         {/* Input para seleccionar archivos */}
         <input
-            type="file"
-            accept="image/*, audio/*, video/*"
-            onChange={handleFileChange}
-            className="hidden"
-            id="fileInputImage"
-          />
+          type="file"
+          accept="image/*, audio/*, video/*"
+          onChange={handleFileChange}
+          className="hidden"
+          id="fileInputImage"
+        />
 
-          {/* Botón para abrir el selector de archivos */}
-          <label
-            htmlFor="fileInputImage"
-            className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-2"
-          >
-            <FaPlus size={27} />
-          </label>
+        {/* Botón para abrir el selector de archivos */}
+        <label
+          htmlFor="fileInputImage"
+          className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-1 mr-1"
+        >
+          <div className="transition-transform transform hover:scale-105 focus:outline-none">
+            <FcAddImage size={43} />
+          </div>
+        </label>
       </div>
     </div>
   );

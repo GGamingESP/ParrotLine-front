@@ -28,7 +28,7 @@ function Login() {
                 email: email,
                 password: password
             }).then(function (response) {
-                toast.success('Inicio de sesión exitoso', { autoClose: 1500 }); // Mensaje de éxito durante 3 segundos
+                toast.success('Inicio de sesión exitoso', { autoClose: 1500},  ); // Mensaje de éxito durante 3 segundos
                 setTimeout(() => {
                  window.location.href = '/Web'; // Redirige a la página deseada después de 3 segundos
                 }, 2000);
@@ -48,7 +48,9 @@ function Login() {
 
             }).catch(function (error) {
                 console.error('Error al iniciar sesión:', error);
-                toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.');
+                toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.', {
+                    style: { height: '110px', fontSize: '1.2rem' }, // Ajusta el tamaño del contenedor del mensaje
+                });
             });
 
            
