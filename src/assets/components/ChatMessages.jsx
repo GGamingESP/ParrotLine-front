@@ -1,22 +1,32 @@
-import { useEffect, useState, useContext } from "react";
-import { FaSmile, FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
+import { useEffect, useState, useRef, useContext } from "react";
+import { FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
 import { IoReload } from "react-icons/io5";
 import MyCurrentGroupContext from '../components/CurrentGroupContext';
 import axios from 'axios';
 import { FcAddImage } from "react-icons/fc";
+import { BsEmojiLaughingFill } from "react-icons/bs";
 
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [mediaDesp, setMediaDesp] = useState(false);
-  // const [mensaje, setMensaje] = useState([]);
   const [mensajeData, setMensajeData] = useState([]);
   const currentGroup = useContext(MyCurrentGroupContext);
+  const messagesEndRef = useRef(null); // Referencia a la última conversación
 
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 
   // useEffect para cuando se cambia de grupo
+
+  useEffect(() => {
+    fetchMessages();
+    console.log(currentGroup);
+  }, [currentGroup]); // Se ejecuta cada vez que el grupo actual seleccionado cambia
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]); // Se ejecuta cada vez que cambian los mensajes
 
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
@@ -24,8 +34,7 @@ function ChatMessages() {
         `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
         {
           headers: {
-            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
             "Content-Type": "application/json",
           },
         }
@@ -38,35 +47,6 @@ function ChatMessages() {
 
     }
   };
-
-  const fetchMessagesNoRepit = async () => {
-    if (currentGroup && currentGroup.id) {
-      const response = await axios.get(
-        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(function (response) {
-        setMessages(response.data.data);
-        setMensajeData(response.data.data);
-        console.log(response);
-      });
-
-    }
-  };
-
-  // setInterval(async () => {
-  //   await fetchMessages();
-  // }, 3000)
-
-  useEffect(() => {
-    fetchMessages();
-    console.log(currentGroup);
-  }, [currentGroup]); // Se ejecuta cada vez que el grupo actual seleccionado cambia
 
   const handleEmojiSelect = (emoji) => {
     setCurrentMessage((prevMessage) => prevMessage + emoji);
@@ -97,40 +77,10 @@ function ChatMessages() {
     "\u{1F917}",
   ];
 
-  // useEffect(() => {
-  //   const drawMessages = () => {
-  //     setMensaje(
-  //       mensajeData.map((value) => {
-  //         <div className="chat chat-start">
-  //           <div className="chat-image avatar">
-  //             <div className="w-10 rounded-full">
-  //               <img
-  //                 alt="Tailwind CSS chat bubble component"
-  //                 src={
-  //                   value.image
-  //                     ? "https://ivan.informartica.es/" + value.image
-  //                     : "/public/default-user.png"
-  //                 }
-  //               />
-  //             </div>
-  //           </div>
-  //           <div className="chat-header">
-  //             {value.user_id == user.user.id ? user.user.name : "Chatero"}
-  //           </div>
-  //           <div className="chat-bubble">{value.text}</div>
-  //         </div>;
-  //       })
-  //     );
-  //   };
-  //   drawMessages();
-  //   // setMessages(initialMessages);
-  // }, [mensajeData]);
-
   const deleteMessage = (id) => {
     axios.delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
       headers: {
-        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
-          }`,
+        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
         "Content-Type": "application/json",
       },
     }).then(function (response) {
@@ -149,28 +99,12 @@ function ChatMessages() {
   };
 
   const sendMessageWithImage = () => {
-    // Obtener la hora actual
-    // const currentTime = new Date();
-    // const hours = currentTime.getHours();
-    // const minutes = currentTime.getMinutes();
-    // const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
-
-    // Crear el nuevo mensaje con la hora actual y la imagen
-    // const newMessage = {
-    //   user: "John",
-    //   text: "",
-    //   file: imageFile,
-    //   time: formattedTime,
-    //   timestamp: currentTime.getTime(), // Guardar el timestamp del mensaje
-    // };
     const formData = new FormData();
 
     formData.append("user_id", user.user.id);
     formData.append("group_id", currentGroup.id);
     formData.append("text", " ");
     formData.append("imagen", selectedFile)
-
-    console.log(formData)
 
     axios.post(`https://ivan.informaticamajada.es/api/createMessageWithImage`, {
       user_id: user.user.id,
@@ -179,8 +113,7 @@ function ChatMessages() {
       imagen: selectedFile
     }, {
       headers: {
-        "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
-          }`,
+        "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
         "Content-Type": "application/json",
       },
     }).then(function (response) {
@@ -189,52 +122,56 @@ function ChatMessages() {
       console.error(error);
     })
 
-    // Agregar el mensaje al estado
-    // setMessages([...messages, newMessage]);
-
-    // Limpiar la selección de archivo
     setSelectedFile(null);
   };
 
+  // Dentro de tu componente ChatMessages
+  const [isSendingMessage, setIsSendingMessage] = useState(false); // Estado para controlar si se está enviando un mensaje
+
+  // Dentro de tu componente ChatMessages
   const sendMessage = () => {
     if (currentMessage.trim() !== "") {
-      // Obtener la hora actual
-      // const currentTime = new Date();
-      // const hours = currentTime.getHours();
-      // const minutes = currentTime.getMinutes();
-      // const formattedTime = `${hours}:${minutes < 10 ? "0" : ""}${minutes}`;
+      // Verifica si ya se está enviando un mensaje
+      if (isSendingMessage) {
+        return; // Evita enviar múltiples solicitudes si ya se está enviando un mensaje
+      }
 
-      // // Crear el nuevo mensaje con la hora actual y el texto con emoji
-      // const newMessage = {
-      //   user: "John",
-      //   text: currentMessage,
-      //   time: formattedTime,
-      // };
+      setIsSendingMessage(true); // Marca que se está enviando un mensaje
 
-      axios.post(`https://ivan.informaticamajada.es/api/message`, {
-        user_id: user.user.id,
-        group_id: currentGroup.id,
-        text: currentMessage
-      }, {
-        headers: {
-          "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
-          'Content-Type': 'application/json'
-        },
-      }).then(function (response) {
-        fetchMessages();
-      }).catch(error => {
-        console.error(error);
-      })
-
-      // Limpiar el campo de mensaje actual y el emoji seleccionado
-      setCurrentMessage("");
+      axios
+        .post(
+          `https://ivan.informaticamajada.es/api/message`,
+          {
+            user_id: user.user.id,
+            group_id: currentGroup.id,
+            text: currentMessage,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(
+                sessionStorage.getItem("currentUser")
+              ).token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(function (response) {
+          fetchMessages();
+          setCurrentMessage(""); // Reinicia el estado del mensaje actual
+          scrollToBottom(); // Desplaza hacia abajo después de enviar un nuevo mensaje
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setIsSendingMessage(false); // Marca que el envío del mensaje ha terminado
+        });
     }
   };
 
-  // setInterval( async () => {
-  //   await fetchMessages();
-  // }, 5000)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
     <div className="flex-1 flex flex-col bg-white ">
@@ -249,7 +186,48 @@ function ChatMessages() {
             }
             alt="Canal de Usuario"
             className="w-full h-full object-cover"
+            onClick={() => document.getElementById('my_modal_3').showModal()}
           />
+
+          <dialog id="my_modal_3" className="modal">
+            <div className="flex items-center justify-center min-h-screen">
+              <div className="modal-overlay fixed inset-0 bg-black opacity-50"></div>
+              <div className="modal-container bg-black w-96 mx-auto rounded-lg shadow-lg z-50 overflow-y-auto">
+                {/* Botón para cerrar el modal */}
+                <form method="dialog">
+                  {/* if there is a button in form, it will close the modal */}
+                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                </form>
+
+                {/* Contenido del modal */}
+                <div className="modal-content p-4">
+                  <h2 className="text-lg font-semibold mb-2">{currentGroup.name}</h2>
+                  <p className="text-sm">{currentGroup.description}</p>
+
+                  {/* Acordeón de usuarios enlazados al grupo */}
+                  <div className="mt-4">
+                    {/* Título del acordeón */}
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-semibold">Usuarios enlazados al grupo</h3>
+                      <button className="accordion-toggle">
+                        <svg className="h-4 w-4 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10.707 9.293a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L10 11.414l2.293 2.293a1 1 0 101.414-1.414l-3-3z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                    </div>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Contenido del acordeón */}
+            <form method="dialog" className="modal-backdrop">
+              <button>close</button>
+            </form>
+          </dialog>
+
+
         </div>
 
         {/* Información del usuario */}
@@ -262,7 +240,7 @@ function ChatMessages() {
           </p>
         </div>
         <div className=" items-center">
-          <button className="text-white me-4 text-xl" size={27} onClick={() => { fetchMessages() }}><IoReload /></button>
+          <button className="text-white me-4 mt-2 text-xl" onClick={() => { fetchMessages() }}><IoReload size={22} /></button>
         </div>
 
         {/* Icono de opciones al final */}
@@ -309,7 +287,7 @@ function ChatMessages() {
             </div>
           )
         }
-
+        <div ref={messagesEndRef} /> {/* Referencia a la última conversación */}
       </div>
       <div className="flex-1"></div>{" "}
       {/* Espacio flexible para empujar el contenido hacia arriba */}
@@ -324,10 +302,10 @@ function ChatMessages() {
         >
           {/* Icono de emoji */}
           <button
-            className="text-gray-500 p-2 hover:text-gray-700"
+            className="flex items-center mr-2 justify-center w-10 h-10 rounded-md bg-blue-500 text-white hover:bg-blue-600 active:bg-blue-700 focus:outline-none mt-1 transition-transform transform hover:scale-105"
             onClick={() => document.getElementById("my_modal_2").showModal()}
           >
-            <FaSmile size={27} />
+            <BsEmojiLaughingFill size={24} color="" />
           </button>
 
           {/* Modal emoji */}
@@ -399,6 +377,7 @@ function ChatMessages() {
             <FcAddImage size={43} />
           </div>
         </label>
+
       </div>
     </div>
   );

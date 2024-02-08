@@ -1,6 +1,6 @@
 // UserProfile.js
 import { useState, useEffect } from "react";
-import { FaCog } from "react-icons/fa";
+import { FaCog, FaUserCircle, FaPen, FaPaintBrush, FaSignOutAlt } from "react-icons/fa";
 import axios
   from "axios";
 function UserProfile() {
@@ -13,7 +13,7 @@ function UserProfile() {
   const [description, setDescription] = useState('Tu Descripción');
   const [image, setImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  
+
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
   };
@@ -133,8 +133,8 @@ function UserProfile() {
 
 
   return (
-    <div className="flex items-center mb-4 ">
-      <div className="w-12 h-12 rounded-full overflow-hidden">
+    <div className="flex items-center mb-4">
+      <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
           onClick={() => document.getElementById('modal_1').showModal()}
@@ -142,12 +142,12 @@ function UserProfile() {
           alt="User profile"
         />
       </div>
-      <div className="ml-4">
-        <h3 className=" text-3x1 text-white font-semibold">{name}</h3>
+      <div className="ml-1 flex items-center">
+        <h3 className="text-2xl text-white font-semibold mr-2">{name}</h3>
         {/* Botón de ajustes */}
-        <div className="ml-24 relative"> {/* Ajusta el valor de ml-2 según tus preferencias */}
+        <div className="relative ml-16 mt-3">
           <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_1').showModal()}>
-            <FaCog size={"20"} />
+            <FaCog size={22} />
           </button>
 
           {/* Modal */}
@@ -202,7 +202,7 @@ function UserProfile() {
                         <input type="file" className="hidden" onChange={handleFileChange} />
                       </label>
                       <button
-                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded"
+                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded "
                         onClick={handleSaveChanges}
                       >
                         Guardar cambios
@@ -212,43 +212,50 @@ function UserProfile() {
                 </div>
               </div>
 
-              {/* Nombre */}
+              {/*Nombre*/}
               <div className="text-lg font-semibold mb-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-semibold text-blue-500 cursor-pointer  transition-transform transform hover:scale-105" onClick={() => setNameEditMode(!isNameEditMode)}>
+                    <FaUserCircle className="inline-block mr-2" size={18} />
+                    Name: {name}
+                  </h4>
+                </div>
                 {isNameEditMode ? (
                   <>
                     <textarea
                       value={name}
                       onChange={handleNameChange}
                       className="w-full border p-2 rounded"
-                      placeholder="Escribe tu nombre..."
+                      placeholder="Write your name..."
                     />
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleUpdateName}>
-                      Aceptar
+                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded focus:outline-none  transition-transform transform hover:scale-105" onClick={handleUpdateName}>
+                      Guardar
                     </button>
                   </>
-                ) : (
-                  <span className="cursor-pointer text-blue-500" onClick={handleNameEdit}>
-                    Nombre: {name}
-                  </span>
-                )}
+                ) : null}
               </div>
+
+
 
               {/* Descripción */}
               <div className="mb-4">
-                <button className="text-blue-500 underline" onClick={handleDescriptionEdit}>
-                  Descripción
-                </button>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none  transition-transform transform hover:scale-105" onClick={handleDescriptionEdit}>
+                    <FaPen className="inline-block mr-2" size={18} />
+                    Description
+                  </h4>
+                </div>
                 {isDescriptionEditMode && (
                   <div>
-                    {/* Texto editable y opciones para cambiar */}
                     <textarea
                       value={description}
-                      onChange={handleDescriptionChange}
+                      onChange={(e) => setDescription(e.target.value)}
                       className="w-full border p-2 rounded"
-                      placeholder="Escribe tu descripción..."
+                      placeholder="Write your Description..."
                     />
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded" onClick={handleUpdateDescription}>
-                      Aceptar
+                    {/* Botón de Guardar */}
+                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded  transition-transform transform hover:scale-105" onClick={handleUpdateDescription}>
+                      Guardar
                     </button>
                   </div>
                 )}
@@ -256,25 +263,44 @@ function UserProfile() {
 
               {/* Personalización */}
               <div className="mb-4">
-                <button
-                  className="text-blue-500 underline"
-                  onClick={() => setIsCustomizationOpen(!isCustomizationOpen)}
-                >
-                  Personalización
-                </button>
+                <div className="flex items-center justify-between">
+                  <button
+                    className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
+                    onClick={() => setIsCustomizationOpen(!isCustomizationOpen)}
+                  >
+                    <FaPaintBrush className="inline-block mr-2" size={18} />
+                    Personalization
+                  </button>
+                </div>
                 {isCustomizationOpen && (
-                  <div>
-                    {/* Opciones de personalización */}
-                    {/* ... */}
+                  <div className="mt-2 flex items-center space-x-4">
+                    <div className="text-lg font-semibold">Selecciona un color:</div>
+                    <div className="flex items-center space-x-2">
+                      <div
+                        className="w-8 h-8 rounded-full cursor-pointer bg-gray-500  transition-transform transform hover:scale-105"
+                        onClick={() => handleColorChange('#FF0000')}
+                      ></div>
+                      <div
+                        className="w-8 h-8 rounded-full cursor-pointer bg-green-500  transition-transform transform hover:scale-105"
+                        onClick={() => handleColorChange('#00FF00')}
+                      ></div>
+                      <div
+                        className="w-8 h-8 rounded-full cursor-pointer bg-blue-500  transition-transform transform hover:scale-105"
+                        onClick={() => handleColorChange('#0000FF')}
+                      ></div>
+                      {/* Agrega más colores aquí según sea necesario */}
+                    </div>
                   </div>
                 )}
               </div>
 
+
               {/* Logout */}
               <button
-                className="text-red-500 underline"
+                className="text-red-500 text-lg font-semibold cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
                 onClick={() => handleLogout()}
               >
+                <FaSignOutAlt className="inline-block mr-2" size={18} />
                 Logout
               </button>
             </div>

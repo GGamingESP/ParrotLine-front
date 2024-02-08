@@ -24,36 +24,36 @@ function Login() {
         // Aquí puedes realizar cualquier acción adicional, como enviar la solicitud de inicio de sesión
         console.log('Campos completados:', { email, password });
 
-            axios.post(Login_url, {
-                email: email,
-                password: password
-            }).then(function (response) {
-                toast.success('Inicio de sesión exitoso', { autoClose: 1500},  ); // Mensaje de éxito durante 3 segundos
-                setTimeout(() => {
-                 window.location.href = '/Web'; // Redirige a la página deseada después de 3 segundos
-                }, 2000);
-                console.log(response.data.data)
-                let currentUser = {
-                    token: response.data.data.token,
-                    user: {
-                        name: response.data.data.user.name,
-                        email: response.data.data.user.email,
-                        image: response.data.data.user.image,
-                        description: response.data.data.user.description,
-                        id: response.data.data.user.id
-                    }
+        axios.post(Login_url, {
+            email: email,
+            password: password
+        }).then(function (response) {
+            toast.success('Inicio de sesión exitoso', { autoClose: 1500 },); // Mensaje de éxito durante 3 segundos
+            setTimeout(() => {
+                window.location.href = '/Web'; // Redirige a la página deseada después de 3 segundos
+            }, 2000);
+            console.log(response.data.data)
+            let currentUser = {
+                token: response.data.data.token,
+                user: {
+                    name: response.data.data.user.name,
+                    email: response.data.data.user.email,
+                    image: response.data.data.user.image,
+                    description: response.data.data.user.description,
+                    id: response.data.data.user.id
                 }
+            }
 
-                sessionStorage.setItem("currentUser",JSON.stringify(currentUser))
+            sessionStorage.setItem("currentUser", JSON.stringify(currentUser))
 
-            }).catch(function (error) {
-                console.error('Error al iniciar sesión:', error);
-                toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.', {
-                    style: { height: '110px', fontSize: '1.2rem' }, // Ajusta el tamaño del contenedor del mensaje
-                });
+        }).catch(function (error) {
+            console.error('Error al iniciar sesión:', error);
+            toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.', {
+                style: { height: '110px', fontSize: '1.2rem' }, // Ajusta el tamaño del contenedor del mensaje
             });
+        });
 
-           
+
     };
 
 
