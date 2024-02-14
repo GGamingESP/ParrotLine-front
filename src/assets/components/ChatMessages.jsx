@@ -5,6 +5,7 @@ import MyCurrentGroupContext from '../components/CurrentGroupContext';
 import axios from 'axios';
 import { FcAddImage } from "react-icons/fc";
 import { BsEmojiLaughingFill } from "react-icons/bs";
+import { GoArrowDown } from "react-icons/go";
 
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
@@ -22,11 +23,8 @@ function ChatMessages() {
   useEffect(() => {
     fetchMessages();
     console.log(currentGroup);
-  }, [currentGroup]); // Se ejecuta cada vez que el grupo actual seleccionado cambia
+  }, [currentGroup]);
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]); // Se ejecuta cada vez que cambian los mensajes
 
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
@@ -45,6 +43,24 @@ function ChatMessages() {
         setTimeout(() => { fetchMessages() }, 5000)
       });
 
+    }
+  };
+
+  const fetchMessagesNoRepit = async () => {
+    if (currentGroup && currentGroup.id) {
+      const response = await axios.get(
+        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      ).then(function (response) {
+        setMessages(response.data.data);
+        setMensajeData(response.data.data);
+        console.log(response);
+      });
     }
   };
 
@@ -114,7 +130,8 @@ function ChatMessages() {
     }, {
       headers: {
         "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-        "Content-Type": "application/json",
+        "Content-Type": "multipart/form-data",
+        "X-Requested-With": 'XMLHttpRequest',
       },
     }).then(function (response) {
       fetchMessagesNoRepit();
@@ -156,7 +173,7 @@ function ChatMessages() {
           }
         )
         .then(function (response) {
-          fetchMessages();
+          fetchMessagesNoRepit();
           setCurrentMessage(""); // Reinicia el estado del mensaje actual
           scrollToBottom(); // Desplaza hacia abajo después de enviar un nuevo mensaje
         })
@@ -175,7 +192,7 @@ function ChatMessages() {
 
   return (
     <div className="flex-1 flex flex-col bg-white ">
-      <div className="w-full bg-[#4aa88f] p-4 mb-4 flex items-center h-16">
+      <div className="w-full bg-[#4aa88f] p-4  flex items-center h-16">
         {/* Perfil del usuario al que se habla */}
         <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
           <img
@@ -188,40 +205,60 @@ function ChatMessages() {
             className="w-full h-full object-cover"
             onClick={() => document.getElementById('my_modal_3').showModal()}
           />
-
           <dialog id="my_modal_3" className="modal">
-            <div className="flex items-center justify-center min-h-screen">
-              <div className="modal-overlay fixed inset-0 bg-black opacity-50"></div>
-              <div className="modal-container bg-black w-96 mx-auto rounded-lg shadow-lg z-50 overflow-y-auto">
-                {/* Botón para cerrar el modal */}
-                <form method="dialog">
-                  {/* if there is a button in form, it will close the modal */}
-                  <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-                </form>
-
-                {/* Contenido del modal */}
-                <div className="modal-content p-4">
-                  <h2 className="text-lg font-semibold mb-2">{currentGroup.name}</h2>
-                  <p className="text-sm">{currentGroup.description}</p>
-
-                  {/* Acordeón de usuarios enlazados al grupo */}
-                  <div className="mt-4">
-                    {/* Título del acordeón */}
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-sm font-semibold">Usuarios enlazados al grupo</h3>
-                      <button className="accordion-toggle">
-                        <svg className="h-4 w-4 transform transition-transform duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10.707 9.293a1 1 0 00-1.414 0l-3 3a1 1 0 101.414 1.414L10 11.414l2.293 2.293a1 1 0 101.414-1.414l-3-3z" clipRule="evenodd" />
-                        </svg>
-                      </button>
-                    </div>
-
-
+            <div className="modal-box">
+              <form method="dialog">
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+              </form>
+              {/* Imagen del grupo */}
+              <img
+                src={currentGroup.image ? "https://ivan.informaticamajada.es/" + currentGroup.image : "/public/default-group-image.png"}
+                alt="Imagen del Grupo"
+                className="w-20 h-20 rounded-full object-cover mb-4"
+              />
+              {/* Nombre del grupo */}
+              <h3 className="text-lg font-bold mb-2">{currentGroup.name}</h3>
+              {/* Descripción del grupo */}
+              <p className="text-sm mb-2">{currentGroup.description}</p>
+              {/* ID del grupo */}
+              <div className="border border-gray-300 rounded p-2 mb-4">{currentGroup.id}</div>
+              {/* Collapse con usuarios asociados al grupo */}
+              <h4 className="font-bold mb-2">Usuarios asociados:</h4>
+              <div className="w-64 overflow-y-auto max-h-60">
+                
+                {/* Aquí irían los usuarios asociados al grupo */}
+                <div className="border border-gray-300 rounded p-2">
+                  {/* Ejemplo de usuario */}
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Usuario</p>
                   </div>
+                  {/* Ejemplo de otro usuario */}
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Otro Usuario</p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Otro Usuario</p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Otro Usuario</p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Otro Usuario</p>
+                  </div>
+                  <div className="flex items-center mb-2">
+                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <p>Nombre del Otro Usuario</p>
+                  </div>
+                  
+                  {/* Y así sucesivamente */}
                 </div>
               </div>
             </div>
-            {/* Contenido del acordeón */}
             <form method="dialog" className="modal-backdrop">
               <button>close</button>
             </form>
@@ -238,6 +275,9 @@ function ChatMessages() {
           <p className="text-white text-sm pt-[-0.2em]">
             {currentGroup.description}
           </p>
+        </div>
+        <div className=" items-center">
+          <button className="text-white me-4 mt-2 text-xl" onClick={() => { scrollToBottom() }}><GoArrowDown size={26} /></button>
         </div>
         <div className=" items-center">
           <button className="text-white me-4 mt-2 text-xl" onClick={() => { fetchMessages() }}><IoReload size={22} /></button>
@@ -262,7 +302,8 @@ function ChatMessages() {
           </ul>
         </div>
       </div>
-      <div className="overflow-y-auto max-h-[calc(100vh-64px)] pb-4 px-4">
+      <div className="overflow-y-auto max-h-full pb-4 px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-gray-100 rounded-lg">
+
         {
           mensajeData.map((value, index) =>
             <div className={`chat ${value.user_id == user.user.id ? "chat-end" : "chat-start"}`} key={index}>
