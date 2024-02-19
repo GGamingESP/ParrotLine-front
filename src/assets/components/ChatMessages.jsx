@@ -1,8 +1,8 @@
 import { useEffect, useState, useRef, useContext } from "react";
-import { FaEllipsisV, FaPaperPlane } from 'react-icons/fa';
+import { FaEllipsisV, FaPaperPlane } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import MyCurrentGroupContext from '../components/CurrentGroupContext';
-import axios from 'axios';
+import MyCurrentGroupContext from "../components/CurrentGroupContext";
+import axios from "axios";
 import { FcAddImage } from "react-icons/fc";
 import { BsEmojiLaughingFill } from "react-icons/bs";
 import { GoArrowDown } from "react-icons/go";
@@ -25,42 +25,50 @@ function ChatMessages() {
     console.log(currentGroup);
   }, [currentGroup]);
 
-
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
-      const response = await axios.get(
-        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(function (response) {
-        setMessages(response.data.data);
-        setMensajeData(response.data.data);
-        console.log(response);
-        setTimeout(() => { fetchMessages() }, 5000)
-      });
-
+      const response = await axios
+        .get(
+          `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(function (response) {
+          setMessages(response.data.data);
+          setMensajeData(response.data.data);
+          console.log(response);
+          setTimeout(() => {
+            fetchMessages();
+          }, 5000);
+        });
     }
   };
 
   const fetchMessagesNoRepit = async () => {
     if (currentGroup && currentGroup.id) {
-      const response = await axios.get(
-        `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      ).then(function (response) {
-        setMessages(response.data.data);
-        setMensajeData(response.data.data);
-        console.log(response);
-      });
+      const response = await axios
+        .get(
+          `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then(function (response) {
+          setMessages(response.data.data);
+          setMensajeData(response.data.data);
+          console.log(response);
+        });
     }
   };
 
@@ -94,50 +102,67 @@ function ChatMessages() {
   ];
 
   const deleteMessage = (id) => {
-    axios.delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
-      headers: {
-        Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-        "Content-Type": "application/json",
-      },
-    }).then(function (response) {
-      fetchMessages();
-    }).catch(error => {
-      console.error(error);
-    })
-  }
+    axios
+      .delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
+        headers: {
+          Authorization: `Bearer ${
+            JSON.parse(sessionStorage.getItem("currentUser")).token
+          }`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then(function (response) {
+        fetchMessages();
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setTimeout(() => { sendMessageWithImage(); }, 2000)
+      setTimeout(() => {
+        sendMessageWithImage();
+      }, 2000);
     }
   };
 
   const sendMessageWithImage = () => {
-    const formData = new FormData();
 
-    formData.append("user_id", user.user.id);
-    formData.append("group_id", currentGroup.id);
-    formData.append("text", " ");
-    formData.append("imagen", selectedFile)
 
-    axios.post(`https://ivan.informaticamajada.es/api/createMessageWithImage`, {
-      user_id: user.user.id,
-      group_id: currentGroup.id,
-      text: " ",
-      imagen: selectedFile
-    }, {
-      headers: {
-        "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
-        "Content-Type": "multipart/form-data",
-        "X-Requested-With": 'XMLHttpRequest',
-      },
-    }).then(function (response) {
-      fetchMessagesNoRepit();
-    }).catch(error => {
-      console.error(error);
-    })
+    axios
+      .post(
+        `https://ivan.informaticamajada.es/api/message`,
+          {
+            user_id: user.user.id,
+            group_id: currentGroup.id,
+            text: 'l',
+          },
+        {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then(function (response) {
+        console.log(response)
+        axios.post (`https://ivan.informaticamajada.es/api/createMessageWithImage/${response.data.data.id}`, {imagen: selectedFile},{
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+            "Content-Type": "multipart/form-data",
+          },
+        } )
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
     setSelectedFile(null);
   };
@@ -165,9 +190,9 @@ function ChatMessages() {
           },
           {
             headers: {
-              Authorization: `Bearer ${JSON.parse(
-                sessionStorage.getItem("currentUser")
-              ).token}`,
+              Authorization: `Bearer ${
+                JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
               "Content-Type": "application/json",
             },
           }
@@ -203,68 +228,107 @@ function ChatMessages() {
             }
             alt="Canal de Usuario"
             className="w-full h-full object-cover"
-            onClick={() => document.getElementById('my_modal_3').showModal()}
+            onClick={() => document.getElementById("my_modal_3").showModal()}
           />
           <dialog id="my_modal_3" className="modal">
             <div className="modal-box">
               <form method="dialog">
-                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+                <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+                  ✕
+                </button>
               </form>
               {/* Imagen del grupo */}
               <img
-                src={currentGroup.image ? "https://ivan.informaticamajada.es/" + currentGroup.image : "/public/default-group-image.png"}
+                src={
+                  currentGroup.image
+                    ? "https://ivan.informaticamajada.es/" + currentGroup.image
+                    : "/public/default-group-image.png"
+                }
                 alt="Imagen del Grupo"
-                className="w-20 h-20 rounded-full object-cover mb-4"
+                className="w-20 h-20 rounded-full object-cover mb-2"
               />
               {/* Nombre del grupo */}
               <h3 className="text-lg font-bold mb-2">{currentGroup.name}</h3>
               {/* Descripción del grupo */}
               <p className="text-sm mb-2">{currentGroup.description}</p>
               {/* ID del grupo */}
-              <div className="border border-gray-300 rounded p-2 mb-4">{currentGroup.id}</div>
+              <div className="border border-gray-300 rounded p-2 mb-4">
+                {currentGroup.id}
+              </div>
               {/* Collapse con usuarios asociados al grupo */}
               <h4 className="font-bold mb-2">Usuarios asociados:</h4>
               <div className="w-64 overflow-y-auto max-h-60">
-                
                 {/* Aquí irían los usuarios asociados al grupo */}
                 <div className="border border-gray-300 rounded p-2">
                   {/* Ejemplo de usuario */}
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Usuario</p>
                   </div>
                   {/* Ejemplo de otro usuario */}
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Otro Usuario</p>
                   </div>
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Otro Usuario</p>
                   </div>
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Otro Usuario</p>
                   </div>
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Otro Usuario</p>
                   </div>
                   <div className="flex items-center mb-2">
-                    <img src="url_de_la_imagen" alt="Avatar Usuario" className="w-8 h-8 rounded-full object-cover mr-2" />
+                    <img
+                      src="url_de_la_imagen"
+                      alt="Avatar Usuario"
+                      className="w-8 h-8 rounded-full object-cover mr-2"
+                    />
                     <p>Nombre del Otro Usuario</p>
                   </div>
-                  
+
                   {/* Y así sucesivamente */}
                 </div>
+              </div>
+              <div className="flex justify-start mb-4 mt-4">
+                {/* Botón para bloquear el grupo */}
+                <button className="btn bg-red-500 text-white rounded-md px-3 py-1 mr-5 hover:bg-red-600">
+                  Bloquear Grupo
+                </button>
+                {/* Botón para salir del grupo */}
+                <button className="btn bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600">
+                  Salir del Grupo
+                </button>
               </div>
             </div>
             <form method="dialog" className="modal-backdrop">
               <button>close</button>
             </form>
           </dialog>
-
-
         </div>
 
         {/* Información del usuario */}
@@ -277,10 +341,24 @@ function ChatMessages() {
           </p>
         </div>
         <div className=" items-center">
-          <button className="text-white me-4 mt-2 text-xl" onClick={() => { scrollToBottom() }}><GoArrowDown size={26} /></button>
+          <button
+            className="text-white me-4 mt-2 text-xl"
+            onClick={() => {
+              scrollToBottom();
+            }}
+          >
+            <GoArrowDown size={26} />
+          </button>
         </div>
         <div className=" items-center">
-          <button className="text-white me-4 mt-2 text-xl" onClick={() => { fetchMessages() }}><IoReload size={22} /></button>
+          <button
+            className="text-white me-4 mt-2 text-xl"
+            onClick={() => {
+              fetchMessages();
+            }}
+          >
+            <IoReload size={22} />
+          </button>
         </div>
 
         {/* Icono de opciones al final */}
@@ -303,31 +381,41 @@ function ChatMessages() {
         </div>
       </div>
       <div className="overflow-y-auto max-h-full pb-4 px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-gray-100 rounded-lg">
-
-        {
-          mensajeData.map((value, index) =>
-            <div className={`chat ${value.user_id == user.user.id ? "chat-end" : "chat-start"}`} key={index}>
-              <div className="chat-image avatar group">
-                <div className="w-10 rounded-full">
-                  <img
-                    alt="user image"
-                    src={
-                      value.image
-                        ? "https://ivan.informartica.es/" + value.image
-                        : "/public/default-user.png"
-                    }
-                  />
-
-                </div>
-                {value.user_id == user.user.id ? <button className="hidden group-hover:block text-black z-50 opacity-80" onClick={() => deleteMessage(value.id)}>X</button> : ""}
+        {mensajeData.map((value, index) => (
+          <div
+            className={`chat ${
+              value.user_id == user.user.id ? "chat-end" : "chat-start"
+            }`}
+            key={index}
+          >
+            <div className="chat-image avatar group">
+              <div className="w-10 rounded-full">
+                <img
+                  alt="user image"
+                  src={
+                    value.image
+                      ? "https://ivan.informartica.es/" + value.image
+                      : "/public/default-user.png"
+                  }
+                />
               </div>
-              <div className="chat-header">
-                {value.user_id == user.user.id ? user.user.name : "Chatero"}
-              </div>
-              <div className="chat-bubble">{value.text}</div>
+              {value.user_id == user.user.id ? (
+                <button
+                  className="hidden group-hover:block text-black z-50 opacity-80"
+                  onClick={() => deleteMessage(value.id)}
+                >
+                  X
+                </button>
+              ) : (
+                ""
+              )}
             </div>
-          )
-        }
+            <div className="chat-header">
+              {value.user_id == user.user.id ? user.user.name : "Chatero"}
+            </div>
+            <div className="chat-bubble">{value.text}</div>
+          </div>
+        ))}
         <div ref={messagesEndRef} /> {/* Referencia a la última conversación */}
       </div>
       <div className="flex-1"></div>{" "}
@@ -398,7 +486,6 @@ function ChatMessages() {
               <FaPaperPlane size={20} />
             </div>
           </button>
-
         </form>
         {/* Input para seleccionar archivos */}
         <input
@@ -418,7 +505,6 @@ function ChatMessages() {
             <FcAddImage size={43} />
           </div>
         </label>
-
       </div>
     </div>
   );

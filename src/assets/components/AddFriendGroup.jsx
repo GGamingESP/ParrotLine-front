@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
-import { FaUserPlus, FaCheck } from "react-icons/fa";
 import { MdGroupAdd } from "react-icons/md";
-import { FaTimes, FaPlusCircle } from 'react-icons/fa';
+import { FaTimes, FaPlusCircle, FaUsers, FaUserPlus, FaCheck } from 'react-icons/fa';
 import { Form } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
@@ -14,7 +13,11 @@ function AddFriendGroup() {
         <FaUserPlus size={24} />
       </button>
       <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_add_group').showModal()}>
-        <MdGroupAdd size={24} />
+        <MdGroupAdd size={27} />
+      </button>
+
+      <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_invite_group').showModal()}>
+        <FaUsers size={26} />
       </button>
 
       {/* Modal Agregar Amigo */}
@@ -22,9 +25,65 @@ function AddFriendGroup() {
 
       {/* Modal Agregar Grupo */}
       <GroupModal id="modal_add_group" friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
+
+      {/* Modal Ingresar a un Grupo */}
+      <InviteGroupModal id="modal_invite_group" friendRequests={friendRequests} setFriendRequests={setFriendRequests} />
     </div>
   );
 }
+function InviteGroupModal() {
+
+  const [groupId, setGroupId] = useState(""); // Estado para almacenar la ID del grupo
+
+  const handleSubmit = () => {
+    try {
+      // Enviar una solicitud al backend para unirse al grupo con la ID proporcionada
+      axios.post(`https://ivan.informaticamajada.es/api/joinGroup/${groupId}`, {}, {
+        headers: {
+          'Authorization': `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      // Manejar la respuesta del backend según sea necesario
+      // Aquí puedes agregar lógica adicional, como mostrar un mensaje de éxito o actualizar el estado de tu aplicación
+    } catch (error) {
+      // Manejar errores, como mostrar un mensaje de error al usuario
+      console.error("Error al unirse al grupo:", error);
+    }
+  };
+
+  return (
+    <dialog id="modal_invite_group" className="modal">
+      <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg">
+        <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2 text-gray-500 hover:text-gray-700" onClick={() => document.getElementById("modal_invite_group").close()}>
+          <FaTimes size={24} />
+        </button>
+
+        <div className="text-center">
+          <h2 className="text-2xl text-white font-semibold mb-4">Unirse a un Grupo</h2>
+          <form onSubmit={handleSubmit}>
+            <input
+              type="text"
+              name="GroupID"
+              onChange={(e) => setGroupId(e.target.value)}
+              placeholder="ID del Grupo"
+              className="w-full border text-white border-gray-300 p-3 rounded-md mb-4 focus:outline-none focus:border-blue-500"
+            />
+            <button type="submit" className="btn bg-blue-500 text-white rounded-md px-6 py-3 transition duration-300 hover:bg-blue-600">
+              <FaUserPlus className="inline-block mr-2" size={18} />
+              Entrar al Grupo
+            </button>
+          </form>
+        </div>
+
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  );
+}
+
 
 function FriendModal() {
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -45,7 +104,7 @@ function FriendModal() {
       const datos = predata.map((request, index) => (
         <li key={index} className="flex items-center justify-between bg-gray-100 p-3 rounded-lg mb-3">
           <span className="text-lg font-semibold">ID: {request.friend_id}</span>
-          <button value={request.friend_id} onClick={AcceptFriend} className="bg-green-500 text-white rounded px-3 py-1 hover:bg-green-600"><FaCheck  className="inline-block mr-1" /> Aceptar</button>
+          <button value={request.friend_id} onClick={AcceptFriend} className="bg-green-500 text-white rounded px-3 py-1 hover:bg-green-600"><FaCheck className="inline-block mr-1" /> Aceptar</button>
           <button value={request.friend_id} onClick={RejectFriend} className="bg-red-500 text-white rounded px-3 py-1 hover:bg-red-600"><FaTimes className="inline-block mr-1" /> Rechazar</button>
         </li>
       ));
@@ -166,7 +225,7 @@ function GroupModal() {
 
   return (
     <dialog id="modal_add_group" className="modal">
-      <div className="modal-box p-4">
+      <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg">
         <form onSubmit={createGroup}>
           <button
             className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -200,7 +259,7 @@ function GroupModal() {
               <FaPlusCircle className="inline-block mr-2" />
               Crear Grupo
             </button>
-            
+
           </div>
         </form>
       </div>
