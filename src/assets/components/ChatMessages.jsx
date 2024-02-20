@@ -138,7 +138,7 @@ function ChatMessages() {
           {
             user_id: user.user.id,
             group_id: currentGroup.id,
-            text: 'l',
+            text: 'imagen',
           },
         {
           headers: {
@@ -224,7 +224,7 @@ function ChatMessages() {
             src={
               currentGroup.image
                 ? "https://ivan.informaticamajada.es/" + currentGroup.image
-                : "/public/default-user.png"
+                : "/default-user.png"
             }
             alt="Canal de Usuario"
             className="w-full h-full object-cover"
@@ -242,7 +242,7 @@ function ChatMessages() {
                 src={
                   currentGroup.image
                     ? "https://ivan.informaticamajada.es/" + currentGroup.image
-                    : "/public/default-group-image.png"
+                    : "/default-group-image.png"
                 }
                 alt="Imagen del Grupo"
                 className="w-20 h-20 rounded-full object-cover mb-2"
@@ -395,7 +395,7 @@ function ChatMessages() {
                   src={
                     value.image
                       ? "https://ivan.informartica.es/" + value.image
-                      : "/public/default-user.png"
+                      : "/default-user.png"
                   }
                 />
               </div>
