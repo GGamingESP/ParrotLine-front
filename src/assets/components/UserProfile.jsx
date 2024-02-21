@@ -1,18 +1,24 @@
 // UserProfile.js
 import { useState, useEffect } from "react";
-import { FaCog, FaUserCircle, FaPen, FaPaintBrush, FaSignOutAlt } from "react-icons/fa";
-import axios
-  from "axios";
+import {
+  FaCog,
+  FaUserCircle,
+  FaPen,
+  FaPaintBrush,
+  FaSignOutAlt,
+} from "react-icons/fa";
+import axios from "axios";
 function UserProfile() {
   const [isHovered, setHovered] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isNameEditMode, setNameEditMode] = useState(false);
   const [isDescriptionEditMode, setDescriptionEditMode] = useState(false);
-  const [name, setName] = useState('John');
-  const [description, setDescription] = useState('Tu Descripción');
+  const [name, setName] = useState("John");
+  const [description, setDescription] = useState("Tu Descripción");
   const [image, setImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [editedName, setEditedName] = useState(name);
 
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
@@ -42,25 +48,10 @@ function UserProfile() {
     setEditMode(false);
   };
 
-  const handleUpdateName = () => {
-
-    // Actualizar el sessionStorage después de la respuesta exitosa del servidor
-    const updatedUser = {
-      ...JSON.parse(sessionStorage.getItem("currentUser")),
-      user: {
-        ...JSON.parse(sessionStorage.getItem("currentUser")).user,
-        name,
-      },
-    };
-    sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
-    // Finalizar el modo de edición
-    setNameEditMode(false);
-  };
-
   const handleImageChange = (file) => {
     // Verificar el tamaño del archivo
-    if (file.size <= 2 * 1024 * 1024) { // 2 megabytes
+    if (file.size <= 2 * 1024 * 1024) {
+      // 2 megabytes
       const imageURL = URL.createObjectURL(file);
       setImage(imageURL);
       // Actualizar imagen en la sesión
@@ -70,28 +61,62 @@ function UserProfile() {
 
       // Subir la imagen al servidor
       const formData = new FormData();
-      formData.append('imagen', file);
-      let token = user.token
-      axios.post('https://ivan.informaticamajada.es/api/saveUserImage', formData, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-        .then(response => {
+      formData.append("imagen", file);
+      let token = user.token;
+      axios
+        .post("https://ivan.informaticamajada.es/api/saveUserImage", formData, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
           // Manejar la respuesta del servidor
           if (response.ok) {
-            console.log('Imagen subida correctamente.');
+            console.log("Imagen subida correctamente.");
           } else {
-            console.error('Error al subir la imagen:', response.statusText);
+            console.error("Error al subir la imagen:", response.statusText);
           }
         })
-        .catch(error => {
-          console.error('Error al subir la imagen:', error);
+        .catch((error) => {
+          console.error("Error al subir la imagen:", error);
         });
     } else {
-      alert('La imagen excede el límite de tamaño de 2 megabytes.');
+      alert("La imagen excede el límite de tamaño de 2 megabytes.");
     }
+  };
+
+  const handleUpdateName = () => {
+    // Realizar la solicitud al servidor para actualizar el nombre de usuario
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    const token = user.token;
+
+    axios
+      .put(
+        `https://ivan.informaticamajada.es/api/user/${user.user.id}`,
+        { name: editedName, description: '' }, // Enviar el nuevo nombre de usuario al servidor
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        // Manejar la respuesta del servidor
+        console.log(
+          "Nombre de usuario actualizado correctamente:",
+          response.data
+        );
+        // Actualizar el nombre de usuario localmente
+        setName(editedName);
+        // Finalizar el modo de edición
+        setNameEditMode(false);
+      })
+      .catch((error) => {
+        console.error("Error al actualizar el nombre de usuario:", error);
+        // Aquí puedes manejar el error de acuerdo a tus necesidades
+      });
   };
 
   const handleUpdateDescription = () => {
@@ -114,13 +139,12 @@ function UserProfile() {
 
   const handleLogout = () => {
     // Elimina el token y cualquier otra información de sesión
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('currentUser');
+    sessionStorage.removeItem("token");
+    sessionStorage.removeItem("currentUser");
 
     // Redirige a la página de inicio de sesión
-    window.location.href = "/Login"
+    window.location.href = "/Login";
   };
-
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -131,13 +155,12 @@ function UserProfile() {
     }
   }, []);
 
-
   return (
     <div className="flex items-center mb-4">
       <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
-          onClick={() => document.getElementById('modal_1').showModal()}
+          onClick={() => document.getElementById("modal_1").showModal()}
           src={image}
           alt="User profile"
         />
@@ -146,7 +169,10 @@ function UserProfile() {
         <h3 className="text-2xl text-white font-semibold mr-2">{name}</h3>
         {/* Botón de ajustes */}
         <div className="relative ml-16 mt-3">
-          <button className="text-white hover:text-gray-700" onClick={() => document.getElementById('modal_1').showModal()}>
+          <button
+            className="text-white hover:text-gray-700"
+            onClick={() => document.getElementById("modal_1").showModal()}
+          >
             <FaCog size={22} />
           </button>
 
@@ -156,14 +182,13 @@ function UserProfile() {
               <form method="dialog">
                 <button
                   className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                  onClick={() => document.getElementById('modal_1').close()}
+                  onClick={() => document.getElementById("modal_1").close()}
                 >
                   ✕
                 </button>
               </form>
 
               <div className="flex items-center justify-center mb-4">
-
                 {/* Avatar */}
                 <div
                   className="relative group"
@@ -183,14 +208,18 @@ function UserProfile() {
                   <img
                     src={image}
                     alt="Avatar Logo"
-                    className={`w-20 h-20 rounded-full object-cover ${isHovered ? 'filter blur-sm' : ''}`}
+                    className={`w-20 h-20 rounded-full object-cover ${
+                      isHovered ? "filter blur-sm" : ""
+                    }`}
                   />
 
                   {isHovered && (
                     <span
                       className="absolute top-0 right-0 m-2 cursor-pointer text-xl text-gray-500"
                       title="Personalizar"
-                      onClick={() => document.getElementById('fileInput').click()}
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
                     >
                       🎨
                     </span>
@@ -199,7 +228,11 @@ function UserProfile() {
                     <div className="absolute bg-white p-4 border rounded">
                       <label className="block mb-2 text-gray-600 cursor-pointer">
                         Seleccionar archivo
-                        <input type="file" className="hidden" onChange={handleFileChange} />
+                        <input
+                          type="file"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
                       </label>
                       <button
                         className="mt-2 px-2 py-1 bg-blue-500 text-white rounded "
@@ -215,7 +248,10 @@ function UserProfile() {
               {/*Nombre*/}
               <div className="text-lg font-semibold mb-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-semibold text-blue-500 cursor-pointer  transition-transform transform hover:scale-105" onClick={() => setNameEditMode(!isNameEditMode)}>
+                  <h4
+                    className="text-lg font-semibold text-blue-500 cursor-pointer transition-transform transform hover:scale-105"
+                    onClick={() => setNameEditMode(!isNameEditMode)}
+                  >
                     <FaUserCircle className="inline-block mr-2" size={18} />
                     Name: {name}
                   </h4>
@@ -223,24 +259,28 @@ function UserProfile() {
                 {isNameEditMode ? (
                   <>
                     <textarea
-                      value={name}
-                      onChange={handleNameChange}
+                      value={editedName}
+                      onChange={(e) => setEditedName(e.target.value)} // Actualiza el valor editado del nombre
                       className="w-full border p-2 rounded"
                       placeholder="Write your name..."
                     />
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded focus:outline-none  transition-transform transform hover:scale-105" onClick={handleUpdateName}>
+                    <button
+                      className="mt-2 px-2 py-1 bg-blue-500 text-white rounded focus:outline-none transition-transform transform hover:scale-105"
+                      onClick={handleUpdateName}
+                    >
                       Guardar
                     </button>
                   </>
                 ) : null}
               </div>
 
-
-
               {/* Descripción */}
               <div className="mb-4">
                 <div className="flex items-center justify-between">
-                  <h4 className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none  transition-transform transform hover:scale-105" onClick={handleDescriptionEdit}>
+                  <h4
+                    className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none  transition-transform transform hover:scale-105"
+                    onClick={handleDescriptionEdit}
+                  >
                     <FaPen className="inline-block mr-2" size={18} />
                     Description
                   </h4>
@@ -254,7 +294,10 @@ function UserProfile() {
                       placeholder="Write your Description..."
                     />
                     {/* Botón de Guardar */}
-                    <button className="mt-2 px-2 py-1 bg-blue-500 text-white rounded  transition-transform transform hover:scale-105" onClick={handleUpdateDescription}>
+                    <button
+                      className="mt-2 px-2 py-1 bg-blue-500 text-white rounded  transition-transform transform hover:scale-105"
+                      onClick={handleUpdateDescription}
+                    >
                       Guardar
                     </button>
                   </div>
@@ -274,26 +317,27 @@ function UserProfile() {
                 </div>
                 {isCustomizationOpen && (
                   <div className="mt-2 flex items-center space-x-4">
-                    <div className="text-lg font-semibold">Selecciona un color:</div>
+                    <div className="text-lg font-semibold">
+                      Selecciona un color:
+                    </div>
                     <div className="flex items-center space-x-2">
                       <div
                         className="w-8 h-8 rounded-full cursor-pointer bg-gray-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange('#FF0000')}
+                        onClick={() => handleColorChange("#FF0000")}
                       ></div>
                       <div
                         className="w-8 h-8 rounded-full cursor-pointer bg-green-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange('#00FF00')}
+                        onClick={() => handleColorChange("#00FF00")}
                       ></div>
                       <div
                         className="w-8 h-8 rounded-full cursor-pointer bg-blue-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange('#0000FF')}
+                        onClick={() => handleColorChange("#0000FF")}
                       ></div>
                       {/* Agrega más colores aquí según sea necesario */}
                     </div>
                   </div>
                 )}
               </div>
-
 
               {/* Logout */}
               <button
@@ -308,15 +352,14 @@ function UserProfile() {
             <form
               method="dialog"
               className="modal-backdrop"
-              onClick={() => document.getElementById('modal_1').close()}
+              onClick={() => document.getElementById("modal_1").close()}
             >
               {/* Fondo para cerrar el modal al hacer clic fuera */}
             </form>
           </dialog>
-
         </div>
       </div>
-    </div >
+    </div>
   );
 }
 

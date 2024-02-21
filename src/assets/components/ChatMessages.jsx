@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useContext } from "react";
-import { FaEllipsisV, FaPaperPlane } from "react-icons/fa";
+import { FaEllipsisV, FaPaperPlane, FaTimes } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
 import MyCurrentGroupContext from "../components/CurrentGroupContext";
 import axios from "axios";
@@ -73,7 +73,8 @@ function ChatMessages() {
   };
 
   const handleEmojiSelect = (emoji) => {
-    setCurrentMessage((prevMessage) => prevMessage + emoji);
+    // Concatenar el emoji seleccionado con el texto existente en el campo de entrada
+    setCurrentMessage(currentMessage + emoji);
   };
 
   const emojiList = [
@@ -123,23 +124,19 @@ function ChatMessages() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      setTimeout(() => {
-        sendMessageWithImage();
-      }, 2000);
+      sendMessageWithImage();
     }
   };
 
   const sendMessageWithImage = () => {
-
-
     axios
       .post(
         `https://ivan.informaticamajada.es/api/message`,
-          {
-            user_id: user.user.id,
-            group_id: currentGroup.id,
-            text: 'imagen',
-          },
+        {
+          user_id: user.user.id,
+          group_id: currentGroup.id,
+          text: "‎",
+        },
         {
           headers: {
             Authorization: `Bearer ${
@@ -150,15 +147,19 @@ function ChatMessages() {
         }
       )
       .then(function (response) {
-        console.log(response)
-        axios.post (`https://ivan.informaticamajada.es/api/createMessageWithImage/${response.data.data.id}`, {imagen: selectedFile},{
-          headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
-            "Content-Type": "multipart/form-data",
-          },
-        } )
+        console.log(response);
+        axios.post(
+          `https://ivan.informaticamajada.es/api/createMessageWithImage/${response.data.data.id}`,
+          { imagen: selectedFile },
+          {
+            headers: {
+              Authorization: `Bearer ${
+                JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       })
       .catch((error) => {
         console.error(error);
@@ -171,6 +172,7 @@ function ChatMessages() {
   const [isSendingMessage, setIsSendingMessage] = useState(false); // Estado para controlar si se está enviando un mensaje
 
   // Dentro de tu componente ChatMessages
+  // Modificar la función sendMessage para que se active solo cuando se presione el botón de enviar o la tecla "Enter"
   const sendMessage = () => {
     if (currentMessage.trim() !== "") {
       // Verifica si ya se está enviando un mensaje
@@ -213,6 +215,40 @@ function ChatMessages() {
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  function quitarPublic(str) {
+    // Longitud de "public/"
+    const publicLength = 7;
+
+    // Corta la cadena desde el índice publicLength
+    return str.slice(publicLength);
+  }
+
+  const leaveGroup = () => {
+    // Aquí envías una solicitud al servidor para salir del grupo
+    axios
+      .post(
+        `https://ivan.informaticamajada.es/api/leaveGroup/${currentGroup.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${
+              JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`, // Asegúrate de ajustar esta parte según tu implementación de autenticación
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        // Manejar la respuesta del servidor
+        console.log("Saliste del grupo exitosamente");
+        // Aquí puedes realizar cualquier otra acción necesaria, como actualizar la interfaz de usuario.
+      })
+      .catch((error) => {
+        // Manejar errores
+        console.error("Error al salir del grupo:", error);
+      });
   };
 
   return (
@@ -260,56 +296,25 @@ function ChatMessages() {
               <div className="w-64 overflow-y-auto max-h-60">
                 {/* Aquí irían los usuarios asociados al grupo */}
                 <div className="border border-gray-300 rounded p-2">
-                  {/* Ejemplo de usuario */}
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Usuario</p>
-                  </div>
-                  {/* Ejemplo de otro usuario */}
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Otro Usuario</p>
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Otro Usuario</p>
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Otro Usuario</p>
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Otro Usuario</p>
-                  </div>
-                  <div className="flex items-center mb-2">
-                    <img
-                      src="url_de_la_imagen"
-                      alt="Avatar Usuario"
-                      className="w-8 h-8 rounded-full object-cover mr-2"
-                    />
-                    <p>Nombre del Otro Usuario</p>
-                  </div>
+                  {/* Mapeo de la lista de usuarios asociados */}
+                  {currentGroup.users &&
+                    currentGroup.users.map((user, index) => (
+                      <div className="flex items-center mb-2" key={index}>
+                        {/* Imagen del usuario */}
+                        <img
+                          src={
+                            user.image
+                              ? "https://ivan.informaticamajada.es/" +
+                                user.image
+                              : "/default-user.png"
+                          }
+                          alt="Avatar Usuario"
+                          className="w-8 h-8 rounded-full object-cover mr-2"
+                        />
+                        {/* Nombre del usuario */}
+                        <p>{user.name}</p>
+                      </div>
+                    ))}
 
                   {/* Y así sucesivamente */}
                 </div>
@@ -320,7 +325,10 @@ function ChatMessages() {
                   Bloquear Grupo
                 </button>
                 {/* Botón para salir del grupo */}
-                <button className="btn bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600">
+                <button
+                  className="btn bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600"
+                  onClick={leaveGroup}
+                >
                   Salir del Grupo
                 </button>
               </div>
@@ -399,21 +407,31 @@ function ChatMessages() {
                   }
                 />
               </div>
-              {value.user_id == user.user.id ? (
+              {value.user_id === user.user.id && (
                 <button
-                  className="hidden group-hover:block text-black z-50 opacity-80"
+                  className="hidden group-hover:block top-1 right-1 text-gray-600 hover:text-red-500 z-50 opacity-80"
                   onClick={() => deleteMessage(value.id)}
                 >
-                  X
+                  <FaTimes size={20} /> {/* Utilizar el ícono de una "X" */}
                 </button>
-              ) : (
-                ""
               )}
             </div>
             <div className="chat-header">
               {value.user_id == user.user.id ? user.user.name : "Chatero"}
             </div>
-            <div className="chat-bubble">{value.text}</div>
+            <div className="chat-bubble">
+              {" "}
+              {value.image && value.image.url !== null && (
+                <img
+                  src={`https://ivan.informaticamajada.es/storage/${quitarPublic(
+                    value.image.url
+                  )}`}
+                  alt="Image"
+                  className="w-full max-w-96 max-h-96 object-contain mx-auto block" // Establecer un tamaño máximo para la imagen
+                />
+              )}
+              {value.text}
+            </div>
           </div>
         ))}
         <div ref={messagesEndRef} /> {/* Referencia a la última conversación */}
@@ -463,6 +481,7 @@ function ChatMessages() {
           {/* Input para texto */}
           <input
             type="text"
+            id="messageInput"
             value={`${currentMessage}`}
             onChange={(e) => setCurrentMessage(e.target.value)}
             onKeyDown={(e) => {
