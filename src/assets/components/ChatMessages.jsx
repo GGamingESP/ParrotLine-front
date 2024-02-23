@@ -16,6 +16,7 @@ function ChatMessages() {
   const currentGroup = useContext(MyCurrentGroupContext);
   const messagesEndRef = useRef(null); // Referencia a la última conversación
   const [initialScrollDone, setInitialScrollDone] = useState(false);
+  const [uploadDesp, setUploadDesp] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 
@@ -121,13 +122,18 @@ function ChatMessages() {
     if (file) {
       setSelectedFile(file);
       // Verificar si selectedFile no es nulo antes de llamar a sendMessageWithImage
-      if (selectedFile !== null) {
+      console.log("falta subir la imagen")
+      if (selectedFile != null) {
+        console.log("preparando para subir la imagen")
         sendMessageWithImage();
       }
     }
   };
 
   const sendMessageWithImage = () => {
+    console.log(selectedFile)
+    let imagen = new FormData(); 
+    imagen.append('imagen', selectedFile);
     axios
       .post(
         `https://ivan.informaticamajada.es/api/message`,
@@ -146,9 +152,10 @@ function ChatMessages() {
       )
       .then(function (response) {
         console.log(response);
+        console.log("Subiendo la imagen")
         axios.post(
           `https://ivan.informaticamajada.es/api/createMessageWithImage/${response.data.data.id}`,
-          { imagen: selectedFile },
+            imagen,
           {
             headers: {
               Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
@@ -417,6 +424,10 @@ function ChatMessages() {
       </div>
       <div className="flex-1"></div>{" "}
       {/* Espacio flexible para empujar el contenido hacia arriba */}
+        <div className={`${uploadDesp ? "block" : "hidden"}  bg-[#4aa88f] mb-4 ms-4 rounded-xl p-2 w-96 h-40 justify-center`}>
+          <input type="file" name="subida" id="subida" className="text-white" onChange={(e) => {setSelectedFile(e.target.files[0]);}} />
+          <button onClick={() => {sendMessageWithImage()}} className="bg-blue-500 p-1 rounded-xl text-white m-1 hover:scale-105 transition-all">Subir la Imagen</button>
+      </div>
       <div className="flex justify-center items-center bg-[#4aa88f]">
         <form
           action=""
@@ -486,23 +497,16 @@ function ChatMessages() {
           </button>
         </form>
         {/* Input para seleccionar archivos */}
-        <input
-          type="file"
-          accept="image/*, audio/*, video/*"
-          onChange={handleFileChange}
-          className="hidden"
-          id="fileInputImage"
-        />
-
         {/* Botón para abrir el selector de archivos */}
-        <label
-          htmlFor="fileInputImage"
-          className="text-gray-500 p-2 hover:text-gray-700 cursor-pointer ml-1 mr-1"
-        >
-          <div className="transition-transform transform hover:scale-105 focus:outline-none">
+          <div className="transition-transform transform hover:scale-105 focus:outline-none p-2 ml-1 mr-1" onClick={() => {setUploadDesp(!uploadDesp)}}>
             <FcAddImage size={43} />
           </div>
-        </label>
+        {/* <input
+          type="file"
+          onChange={(e) => {setSelectedFile(e.target.files[0]); setTimeout(sendMessageWithImage(),1500)}}
+          className="hidden"
+          id="fileInputImage"
+        /> */}
       </div>
     </div>
   );
