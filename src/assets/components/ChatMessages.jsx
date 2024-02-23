@@ -26,7 +26,7 @@ function ChatMessages() {
     setMessages([]);
     fetchMessages();
     console.log(currentGroup);
-  }, [currentGroup]); 
+  }, [currentGroup]);
 
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
@@ -132,7 +132,7 @@ function ChatMessages() {
 
   const sendMessageWithImage = () => {
     console.log(selectedFile)
-    let imagen = new FormData(); 
+    let imagen = new FormData();
     imagen.append('imagen', selectedFile);
     axios
       .post(
@@ -155,7 +155,7 @@ function ChatMessages() {
         console.log("Subiendo la imagen")
         axios.post(
           `https://ivan.informaticamajada.es/api/createMessageWithImage/${response.data.data.id}`,
-            imagen,
+          imagen,
           {
             headers: {
               Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
@@ -268,67 +268,77 @@ function ChatMessages() {
             className="w-full h-full object-cover"
             onClick={() => document.getElementById("my_modal_3").showModal()}
           />
-          <dialog id="my_modal_3" className="modal">
-            <div className="modal-box">
+          <dialog id="my_modal_3" className="modal ">
+            <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg">
               <form method="dialog">
                 <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
                   ✕
                 </button>
               </form>
-              {/* Imagen del grupo */}
-              <img
-                src={
-                  currentGroup.image
-                    ? "https://ivan.informaticamajada.es/" + currentGroup.image
-                    : "/default-group-image.webp"
-                }
-                alt="Imagen del Grupo"
-                className="w-20 h-20 rounded-full object-cover mb-2 cursor-pointer"
-              />
-              {/* Nombre del grupo */}
-              <h3 className="text-lg font-bold mb-2">{currentGroup.name}</h3>
-              {/* Descripción del grupo */}
-              <p className="text-sm mb-2">{currentGroup.description}</p>
-              {/* ID del grupo */}
-              <div className="border border-gray-300 rounded p-2 mb-4">
-                {currentGroup.id}
-              </div>
-              {/* Collapse con usuarios asociados al grupo */}
-              <h4 className="font-bold mb-2">Usuarios asociados:</h4>
-              <div className="w-64 overflow-y-auto max-h-60">
-                {/* Aquí irían los usuarios asociados al grupo */}
-                <div className="border border-gray-300 rounded p-2">
-                  {/* Mapeo de la lista de usuarios asociados */}
-                  {currentGroup.users &&
-                    currentGroup.users.map((user, index) => (
-                      <div className="flex items-center mb-2" key={index}>
-                        {/* Imagen del usuario */}
-                        <img
-                          src={
-                            user.image
-                              ? "https://ivan.informaticamajada.es/" +
-                              user.image
-                              : "/default-user.webp"
-                          }
-                          alt="Avatar Usuario"
-                          className="w-8 h-8 rounded-full object-cover mr-2"
-                        />
-                        {/* Nombre del usuario */}
-                        <p>{user.name}</p>
-                      </div>
-                    ))}
 
-                  {/* Y así sucesivamente */}
-                </div>
+              {/* Imagen del grupo */}
+              <div className="flex justify-center">
+                <img
+                  src={
+                    currentGroup.image
+                      ? "https://ivan.informaticamajada.es/" + currentGroup.image
+                      : "/default-user.webp"
+                  }
+                  alt="Imagen del Grupo"
+                  className="w-20 h-20 rounded-full object-cover mb-2 cursor-pointer"
+                />
               </div>
-              <div className="flex justify-start mb-4 mt-4">
-                {/* Botón para bloquear el grupo */}
-                <button className="btn bg-red-500 text-white rounded-md px-3 py-1 mr-5 hover:bg-red-600">
+
+              {/* Nombre del grupo */}
+              <h3 className="text-lg text-white font-bold text-center mb-2">{currentGroup.name}</h3>
+
+              {/* Descripción del grupo */}
+              <p className="text-sm mb-2 text-white text-center">{currentGroup.description}</p>
+
+              {/* ID del grupo con estilo decorativo */}
+              <div className="border-2 border-gray-300 rounded p-2 mb-4 text-center bg-[#41947d] cursor-pointer hover:opacity-80 transition-opacity"
+                onClick={() => {
+                    // Lógica para copiar el ID del grupo
+                    navigator.clipboard.writeText(currentGroup.id);
+                    // Muestra el mensaje de DaysiUI
+                    alert("ID del grupo copiado con éxito");
+                }}>
+                <span className="font-bold mr-2 text-white">ID del Grupo:</span>
+                <span className="text-white">{currentGroup.id}</span>
+              </div>
+
+              {/* Lista de usuarios asociados al grupo */}
+              <h4 className="font-bold mb-2 text-white">Usuarios asociados:</h4>
+              <div className="overflow-y-auto max-h-60">
+                {/* Mapeo de la lista de usuarios asociados */}
+                {currentGroup.users &&
+                  currentGroup.users.map((user, index) => (
+                    <div className="flex items-center mb-2 " key={index}>
+                      {/* Imagen del usuario */}
+                      <img
+                        src={
+                          user.image
+                            ? "https://ivan.informaticamajada.es/" + user.image
+                            : "/default-user.webp"
+                        }
+                        alt="Avatar Usuario"
+                        className="w-8 h-8 rounded-full object-cover mr-2"
+                      />
+                      {/* Nombre del usuario */}
+                      <p className="text-white">{user.name}</p>
+                    </div>
+                  ))}
+              </div>
+
+              {/* Botones para bloquear el grupo y salir del grupo */}
+              <div className="flex justify-center mt-4">
+                {/* Botón para bloquear el grupo con estilo toggle */}
+                <button className="btn btn-sm bg-red-400 hover:bg-red-500 text-white rounded-md px-3 py-1 mr-2">
                   Bloquear Grupo
                 </button>
                 {/* Botón para salir del grupo */}
                 <button
-                  className="btn bg-gray-500 text-white rounded-md px-3 py-1 hover:bg-gray-600"
+                  className="btn btn-sm bg-red-400 hover:bg-red-500 text-white rounded-md px-3 py-1"
                   onClick={leaveGroup}
                 >
                   Salir del Grupo
@@ -424,9 +434,9 @@ function ChatMessages() {
       </div>
       <div className="flex-1"></div>{" "}
       {/* Espacio flexible para empujar el contenido hacia arriba */}
-        <div className={`${uploadDesp ? "block" : "hidden"}  bg-[#4aa88f] mb-4 ms-4 rounded-xl p-2 w-96 h-40 justify-center`}>
-          <input type="file" name="subida" id="subida" className="text-white" onChange={(e) => {setSelectedFile(e.target.files[0]);}} />
-          <button onClick={() => {sendMessageWithImage()}} className="bg-blue-500 p-1 rounded-xl text-white m-1 hover:scale-105 transition-all">Subir la Imagen</button>
+      <div className={`${uploadDesp ? "block" : "hidden"}  bg-[#4aa88f] mb-4 ms-4 rounded-xl p-2 w-96 h-40 justify-center`}>
+        <input type="file" name="subida" id="subida" className="text-white" onChange={(e) => { setSelectedFile(e.target.files[0]); }} />
+        <button onClick={() => { sendMessageWithImage() }} className="bg-blue-500 p-1 rounded-xl text-white m-1 hover:scale-105 transition-all">Subir la Imagen</button>
       </div>
       <div className="flex justify-center items-center bg-[#4aa88f]">
         <form
@@ -498,9 +508,9 @@ function ChatMessages() {
         </form>
         {/* Input para seleccionar archivos */}
         {/* Botón para abrir el selector de archivos */}
-          <div className="transition-transform transform hover:scale-105 focus:outline-none p-2 ml-1 mr-1" onClick={() => {setUploadDesp(!uploadDesp)}}>
-            <FcAddImage size={43} />
-          </div>
+        <div className="transition-transform transform hover:scale-105 focus:outline-none p-2 ml-1 mr-1" onClick={() => { setUploadDesp(!uploadDesp) }}>
+          <FcAddImage size={43} />
+        </div>
         {/* <input
           type="file"
           onChange={(e) => {setSelectedFile(e.target.files[0]); setTimeout(sendMessageWithImage(),1500)}}

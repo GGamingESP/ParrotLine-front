@@ -35,10 +35,10 @@ function Login() {
             email: email,
             password: password
         }).then(function (response) {
-            toast.success('Inicio de sesión exitoso', { autoClose: 1500 },); // Mensaje de éxito durante 3 segundos
+            toast.success('Inicio de sesión exitoso', { autoClose: 900 },); // Mensaje de éxito durante 3 segundos
             setTimeout(() => {
                 window.location.href = '/Web'; // Redirige a la página deseada después de 3 segundos
-            }, 2000);
+            }, 1550);
             console.log(response.data.data)
             let currentUser = {
                 token: response.data.data.token,
@@ -56,7 +56,7 @@ function Login() {
         }).catch(function (error) {
             console.error('Error al iniciar sesión:', error);
             toast.error('Error al intentar iniciar sesión. Por favor, intenta de nuevo.', {
-                style: { height: '110px', fontSize: '1.2rem' }, // Ajusta el tamaño del contenedor del mensaje
+                style: { height: '110px', fontSize: '1.2rem', autoClose: 1000 }, // Ajusta el tamaño del contenedor del mensaje
             });
         });
 
@@ -127,9 +127,12 @@ function Login() {
                         </div>
 
                         <div className="flex items-center justify-between mb-4">
-                            <div className="flex items-center">
-                            <label className="text-sm text-black"><input type="checkbox" className="mr-2 bg-white border-none checkbox checkbox-info" />Remember me!!! </label>
-                                
+                            <div className="flex items-center ">
+                                <label className="text-sm text-black">
+                                    <input type="checkbox" className="mr-2  bg-white border-none checkbox checkbox-info" />
+                                    Remember me!!!
+                                </label>
+
                             </div>
 
                             <a href="/Forgot_password" className="text-sm text-black transition-transform transform hover:scale-105">

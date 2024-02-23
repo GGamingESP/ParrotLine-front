@@ -38,7 +38,11 @@ function UserChannels({ userGroup, currentGroup }) {
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full overflow-hidden">
                     <img
-                      src={group.image || 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'}
+                      src={
+                        group.image
+                          ? "https://ivan.informaticamajada.es/" + group.image
+                          : "/default-user.webp"
+                      }
                       alt="Grupo"
                       className="w-full h-full object-cover group-hover:scale-110 transition-all"
                     />
