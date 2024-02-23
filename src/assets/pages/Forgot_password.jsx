@@ -1,5 +1,5 @@
-import parrot3 from '../images/parrot3.png'
-import parrot4 from '../images/parrot4.png'
+import parrot3 from '../images/parrot3.webp'
+import parrot4 from '../images/parrot4.webp'
 
 function Forgot_password() {
 

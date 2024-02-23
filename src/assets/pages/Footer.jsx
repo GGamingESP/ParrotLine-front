@@ -1,5 +1,5 @@
 import { RxDownload, RxGithubLogo } from "react-icons/rx";
-import logoImage from '../images/loro.png'
+import logoImage from '../images/loro.webp'
 
 function Footer() {
     return (

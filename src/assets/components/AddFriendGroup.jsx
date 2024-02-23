@@ -16,26 +16,29 @@ function AddFriendGroup() {
   return (
     <div className="flex items-center justify-center space-x-4 mb-4">
       <button
-        className="text-white hover:text-gray-700"
+        className="text-white  hover:bg-blue-600 transition-colors duration-300 tooltip rounded-full flex items-center justify-center w-9 h-9"
+        data-tip="Add Friend"
         onClick={() => document.getElementById("modal_add_friend").showModal()}
       >
         <FaUserPlus size={24} />
       </button>
+
       <button
-        className="text-white hover:text-gray-700"
+        className="text-white  hover:bg-purple-600 transition-colors duration-300 tooltip rounded-full flex items-center justify-center w-9 h-9"
+        data-tip="Create aGroup"
         onClick={() => document.getElementById("modal_add_group").showModal()}
       >
         <MdGroupAdd size={27} />
       </button>
 
       <button
-        className="text-white hover:text-gray-700"
-        onClick={() =>
-          document.getElementById("modal_invite_group").showModal()
-        }
+        className="text-white  hover:bg-indigo-600 transition-colors duration-300 tooltip rounded-full flex items-center justify-center w-9 h-9"
+        data-tip="Join a Group"
+        onClick={() => document.getElementById("modal_invite_group").showModal()}
       >
         <FaUsers size={26} />
       </button>
+
 
       {/* Modal Agregar Amigo */}
       <FriendModal
@@ -72,9 +75,8 @@ function InviteGroupModal() {
         {},
         {
           headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
             "Content-Type": "application/json",
           },
         }
@@ -226,7 +228,7 @@ function FriendModal() {
 
   return (
     <dialog id="modal_add_friend" className="modal">
-      <div className="modal-box p-4">
+      <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg">
         <button
           className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
           onClick={() => document.getElementById("modal_add_friend").close()}
@@ -235,32 +237,34 @@ function FriendModal() {
         </button>
 
         <div>
-          <h2 className="text-xl font-semibold mb-4">
-            Tu ID: {JSON.parse(sessionStorage.getItem("currentUser")).user.id}
+          <h3 className="font-bold text-xl text-white mb-4">ADD A FRIEND</h3>
+
+          <h2 className="text-xl font-semibold mb-4 text-white">
+            Your ID: {JSON.parse(sessionStorage.getItem("currentUser")).user.id}
           </h2>
           <form onSubmit={SendFriendRequest}>
             <input
               type="text"
               name="FriendId"
-              placeholder="ID del amigo"
-              className="w-full border p-2 rounded mb-2"
+              placeholder="Friend ID"
+              className="w-full border p-2 rounded mb-2 text-white"
             />
             <button
               type="submit"
               className="btn bg-blue-500 text-white rounded px-2 transition duration-300 hover:bg-blue-600"
             >
               <FaUserPlus className="inline-block mr-2" size={18} />
-              Enviar Solicitud
+              Send Request
             </button>
           </form>
         </div>
 
         <div className="mt-4">
-          <h2 className="text-xl font-semibold mb-2">
-            Solicitudes Pendientes:
+          <h2 className="text-xl font-semibold mb-2 text-white">
+            Awaiting Request:
           </h2>
-          {friendRequest.length === 0 ? (
-            <p>No tienes solicitudes pendientes.</p>
+          {friendRequest.length == 0 ? (
+            <p>You have no pending requests.</p>
           ) : (
             <ul className="space-y-2">{friendhtml}</ul>
           )}
@@ -277,7 +281,6 @@ function GroupModal() {
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 
   function createGroup(event) {
-    event.preventDefault(); // Evita que se recargue la página al enviar el formulario
 
     const groupName = event.target.groupName.value;
     const groupDescription = event.target.groupDescription.value;
@@ -311,47 +314,34 @@ function GroupModal() {
   }
 
   return (
-<dialog id="modal_add_group" className="modal">
-  <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg flex flex-col items-center justify-center">
-    <form method="dialog" onSubmit={createGroup} className="w-full max-w-sm">
-      <button className="btn btn-sm btn-ghost absolute top-2 right-2">
-        ✕
-      </button>
 
-      <div class="mb-4 w-full">
-        <h2 className="text-xl font-bold mb-2 text-white">Crea el grupo:</h2>
-        <input
-          type="text"
-          name="groupName" // Nombre del grupo
-          placeholder="Nombre del grupo"
-          className="w-full border p-2 rounded"
-          required // Campo requerido
-        />
-      </div>
-      <div className="mb-4 w-full">
-        <textarea
-          name="groupDescription" // Descripción del grupo
-          placeholder="Descripción del grupo"
-          className="w-full border p-2 rounded"
-        ></textarea>
-      </div>
-      <div className="w-full">
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300"
-        >
-          <FaPlusCircle class="inline-block mr-2" />
-          Crear Grupo
-        </button>
-      </div>
-    </form>
-  </div>
-  <form method="dialog" className="modal-backdrop">
-    <button>close</button>
-  </form>
-  <ToastContainer />
-</dialog>
+    <dialog id="modal_add_group" className="modal">
+      <div className="modal-box border border-grey p-6 bg-[#4aa88f] rounded-lg shadow-lg">
+        <form method="dialog" onSubmit={createGroup}>
+          {/* if there is a button in form, it will close the modal */}
+          <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
 
+          <h3 className="font-bold text-xl text-white mb-4">CREATION GROUP</h3>
+          {/* Campo para el nombre del grupo */}
+          <div className="mb-4">
+            <label htmlFor="group_name" className="block text-lg font-medium text-white">Group Name:</label>
+            <input type="text" id="group_name" name="groupName" className="mt-1 p-2 block w-full rounded-md border-gray-300 text-white shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required />
+          </div>
+
+          {/* Campo para la descripción del grupo */}
+          <div className="mb-4">
+            <label htmlFor="group_description" className="block text-lg font-medium text-white">Group Description:</label>
+            <textarea id="group_description" name="groupDescription" rows="3" className="mt-1 p-2 block w-full text-white rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50" required></textarea>
+          </div>
+
+          {/* Botón para agregar el grupo */}
+          <button type="submit" className="btn bg-blue-500 text-white rounded-md px-6 py-3 transition duration-300 hover:bg-blue-600">Add Group</button>
+        </form>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
   );
 }
 

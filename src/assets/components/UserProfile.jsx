@@ -170,7 +170,8 @@ function UserProfile() {
         {/* Botón de ajustes */}
         <div className="relative ml-16 mt-3">
           <button
-            className="text-white hover:text-gray-700"
+            className="text-white hover:bg-yellow-400 transition-colors duration-300 tooltip  tooltip-bottom rounded-full flex items-center justify-center w-9 h-9"
+            data-tip="Settings"
             onClick={() => document.getElementById("modal_1").showModal()}
           >
             <FaCog size={22} />

@@ -15,38 +15,36 @@ function ChatMessages() {
   const [mensajeData, setMensajeData] = useState([]);
   const currentGroup = useContext(MyCurrentGroupContext);
   const messagesEndRef = useRef(null); // Referencia a la última conversación
+  const [initialScrollDone, setInitialScrollDone] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 
   // useEffect para cuando se cambia de grupo
 
   useEffect(() => {
+    setMessages([]);
     fetchMessages();
     console.log(currentGroup);
-  }, [currentGroup]);
+  }, [currentGroup]); 
 
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
-      const response = await axios
-        .get(
+      try {
+        const response = await axios.get(
           `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
           {
             headers: {
-              Authorization: `Bearer ${
-                JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
+              Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token}`,
               "Content-Type": "application/json",
             },
           }
-        )
-        .then(function (response) {
-          setMessages(response.data.data);
-          setMensajeData(response.data.data);
-          console.log(response);
-          setTimeout(() => {
-            fetchMessages();
-          }, 5000);
-        });
+        );
+        setMessages(response.data.data);
+        setMensajeData(response.data.data);
+        console.log(response);
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
     }
   };
 
@@ -57,9 +55,8 @@ function ChatMessages() {
           `https://ivan.informaticamajada.es/api/groupmessages/${currentGroup.id}`,
           {
             headers: {
-              Authorization: `Bearer ${
-                JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
+              Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+                }`,
               "Content-Type": "application/json",
             },
           }
@@ -106,9 +103,8 @@ function ChatMessages() {
     axios
       .delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
         headers: {
-          Authorization: `Bearer ${
-            JSON.parse(sessionStorage.getItem("currentUser")).token
-          }`,
+          Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
           "Content-Type": "application/json",
         },
       })
@@ -124,7 +120,10 @@ function ChatMessages() {
     const file = e.target.files[0];
     if (file) {
       setSelectedFile(file);
-      sendMessageWithImage();
+      // Verificar si selectedFile no es nulo antes de llamar a sendMessageWithImage
+      if (selectedFile !== null) {
+        sendMessageWithImage();
+      }
     }
   };
 
@@ -139,9 +138,8 @@ function ChatMessages() {
         },
         {
           headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`,
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`,
             "Content-Type": "application/json",
           },
         }
@@ -153,9 +151,8 @@ function ChatMessages() {
           { imagen: selectedFile },
           {
             headers: {
-              Authorization: `Bearer ${
-                JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
+              Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+                }`,
               "Content-Type": "multipart/form-data",
             },
           }
@@ -192,9 +189,8 @@ function ChatMessages() {
           },
           {
             headers: {
-              Authorization: `Bearer ${
-                JSON.parse(sessionStorage.getItem("currentUser")).token
-              }`,
+              Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+                }`,
               "Content-Type": "application/json",
             },
           }
@@ -233,9 +229,8 @@ function ChatMessages() {
         {},
         {
           headers: {
-            Authorization: `Bearer ${
-              JSON.parse(sessionStorage.getItem("currentUser")).token
-            }`, // Asegúrate de ajustar esta parte según tu implementación de autenticación
+            Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+              }`, // Asegúrate de ajustar esta parte según tu implementación de autenticación
             "Content-Type": "application/json",
           },
         }
@@ -255,12 +250,12 @@ function ChatMessages() {
     <div className="flex-1 flex flex-col bg-white ">
       <div className="w-full bg-[#4aa88f] p-4  flex items-center h-16">
         {/* Perfil del usuario al que se habla */}
-        <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+        <div className="w-12 h-12 rounded-full overflow-hidden mr-2">
           <img
             src={
               currentGroup.image
                 ? "https://ivan.informaticamajada.es/" + currentGroup.image
-                : "/default-user.png"
+                : "/default-user.webp"
             }
             alt="Canal de Usuario"
             className="w-full h-full object-cover"
@@ -278,10 +273,10 @@ function ChatMessages() {
                 src={
                   currentGroup.image
                     ? "https://ivan.informaticamajada.es/" + currentGroup.image
-                    : "/default-group-image.png"
+                    : "/default-group-image.webp"
                 }
                 alt="Imagen del Grupo"
-                className="w-20 h-20 rounded-full object-cover mb-2"
+                className="w-20 h-20 rounded-full object-cover mb-2 cursor-pointer"
               />
               {/* Nombre del grupo */}
               <h3 className="text-lg font-bold mb-2">{currentGroup.name}</h3>
@@ -305,8 +300,8 @@ function ChatMessages() {
                           src={
                             user.image
                               ? "https://ivan.informaticamajada.es/" +
-                                user.image
-                              : "/default-user.png"
+                              user.image
+                              : "/default-user.webp"
                           }
                           alt="Avatar Usuario"
                           className="w-8 h-8 rounded-full object-cover mr-2"
@@ -341,16 +336,18 @@ function ChatMessages() {
 
         {/* Información del usuario */}
         <div className="flex-1">
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold cursor-pointer text-white" onClick={() => document.getElementById("my_modal_3").showModal()}>
             {currentGroup.name}
+
           </h2>
-          <p className="text-white text-sm pt-[-0.2em]">
+          <p className="text-white text-sm pt-[-0.2em] cursor-pointer" onClick={() => document.getElementById("my_modal_3").showModal()}>
             {currentGroup.description}
           </p>
         </div>
         <div className=" items-center">
           <button
-            className="text-white me-4 mt-2 text-xl"
+            className="text-white me-2 mt-2 text-xl hover:bg-purple-600 transition-colors duration-300 tooltip  tooltip-bottom rounded-full flex items-center justify-center w-9 h-9 "
+            data-tip="Scroll"
             onClick={() => {
               scrollToBottom();
             }}
@@ -360,40 +357,21 @@ function ChatMessages() {
         </div>
         <div className=" items-center">
           <button
-            className="text-white me-4 mt-2 text-xl"
+            className="text-white mt-2 text-xl hover:bg-purple-600 transition-colors duration-300 tooltip  tooltip-bottom rounded-full flex items-center justify-center w-9 h-9"
+            data-tip="Refresh"
             onClick={() => {
               fetchMessages();
             }}
           >
-            <IoReload size={22} />
+            <IoReload size={24} />
           </button>
-        </div>
-
-        {/* Icono de opciones al final */}
-        <div className="dropdown dropdown-end">
-          <div tabIndex={0} role="button" className=" m-1">
-            <FaEllipsisV className="text-white" size={21} />
-          </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
-          >
-            <p>¿Quiere Eliminar este usuario/Grupo?</p>
-            <button className="py-1 bg-red-500 text-white rounded mr-2">
-              Aceptar
-            </button>
-            <button className=" py-1 bg-gray-300 text-gray-700 rounded">
-              Cancelar
-            </button>
-          </ul>
         </div>
       </div>
       <div className="overflow-y-auto max-h-full pb-4 px-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-thumb-rounded-full scrollbar-track-gray-100 rounded-lg">
         {mensajeData.map((value, index) => (
           <div
-            className={`chat ${
-              value.user_id == user.user.id ? "chat-end" : "chat-start"
-            }`}
+            className={`chat ${value.user_id == user.user.id ? "chat-end" : "chat-start"
+              }`}
             key={index}
           >
             <div className="chat-image avatar group">
@@ -403,13 +381,14 @@ function ChatMessages() {
                   src={
                     value.image
                       ? "https://ivan.informartica.es/" + value.image
-                      : "/default-user.png"
+                      : "/default-user.webp"
                   }
                 />
               </div>
               {value.user_id === user.user.id && (
                 <button
-                  className="hidden group-hover:block top-1 right-1 text-gray-600 hover:text-red-500 z-50 opacity-80"
+                  className="hidden group-hover:block text-gray-600 hover:text-red-500 z-50  tooltip tooltip-left tooltip-error "
+                  data-tip="Delete Message"
                   onClick={() => deleteMessage(value.id)}
                 >
                   <FaTimes size={20} /> {/* Utilizar el ícono de una "X" */}
@@ -482,7 +461,7 @@ function ChatMessages() {
           <input
             type="text"
             id="messageInput"
-            value={`${currentMessage}`}
+            value={currentMessage}
             onChange={(e) => setCurrentMessage(e.target.value)}
             onKeyDown={(e) => {
               // Verifica si la tecla presionada es Enter

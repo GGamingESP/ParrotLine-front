@@ -14,7 +14,7 @@ function Web() {
     const MyCurrentGroupProvider = MyCurrentGroupContext.Provider;
     const [MyGroups, setMyGroups] = useState([])
     const [CurrentGroup, setCurrentGroup] = useState({})
-
+     const [searchTerm, setSearchTerm] = useState("");
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem("currentUser"));
         if (user) {
@@ -41,7 +41,7 @@ function Web() {
                         <UserProfile />
 
                         {/* Botón de búsqueda */}
-                        <SearchBar />
+                        <SearchBar setSearchTerm={setSearchTerm} />
 
                         {/* Iconos de "Agregar amigo" y "Crear grupo" */}
                         <AddFriendGroup />

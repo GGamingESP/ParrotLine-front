@@ -1,14 +1,21 @@
-import parrot3 from '../images/parrot3.png';
-import parrot4 from '../images/parrot4.png'
+import parrot3 from '../images/parrot3.webp';
+import parrot4 from '../images/parrot4.webp'
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { Login_url } from '../../data/data';
-
+import { useEffect } from 'react';
 
 
 function Login() {
+
+    useEffect(() => {
+        const user = JSON.parse(sessionStorage.getItem("currentUser"));
+        if (user) {
+            window.location.href = "/web";
+        }
+    });
+
     const handleSignIn = (event) => {
         event.preventDefault(); // Evitar que el formulario se envíe automáticamente
 
@@ -102,7 +109,7 @@ function Login() {
                             </div>
                             <div>
                                 <label htmlFor="password" className="block mb-2 text-sm text-gray-600">
-                                    Contraseña
+                                    Password
                                 </label>
                                 <div className="relative">
                                     <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -121,8 +128,8 @@ function Login() {
 
                         <div className="flex items-center justify-between mb-4">
                             <div className="flex items-center">
-                                <input type="checkbox" className="mr-2 bg-white border-none checkbox checkbox-info" />
-                                <label className="text-sm text-black">Remember me!!! </label>
+                            <label className="text-sm text-black"><input type="checkbox" className="mr-2 bg-white border-none checkbox checkbox-info" />Remember me!!! </label>
+                                
                             </div>
 
                             <a href="/Forgot_password" className="text-sm text-black transition-transform transform hover:scale-105">
@@ -130,7 +137,7 @@ function Login() {
                             </a>
                         </div>
 
-                        <button type="submit" className="btn w-full  bg-[#60BB94] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
+                        <button type="submit" className="btn w-full  bg-[#61c99c] text-white font-mono text-2xl p-2 rounded hover:bg-[#52C0B2]  transition-transform transform hover:scale-105">
                             Sign in
                         </button>
 

@@ -1,19 +1,23 @@
 import { useEffect, useState, useContext } from 'react';
 import axios from 'axios';
-import logoImage from '../images/loro.png';
+import logoImage from '../images/loro.webp';
 
 import MyCurrentGroupContext from '../components/CurrentGroupContext';
 
-function UserChannels({userGroup, currentGroup}) {
+function UserChannels({ userGroup, currentGroup }) {
   const [userGroups, setUserGroups] = useState([]);
   const [grouphtml, setgrouphtml] = useState([]);
   const misGrupos = useContext(MyCurrentGroupContext);
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredGroups = userGroups.filter(group => {
+    return group.name.toLowerCase().includes(searchTerm.toLowerCase());
+  });
 
   const handleGroupClick = (group) => {
-    console.log(group)
+    console.log(group);
     currentGroup(group);
   };
-  
 
   useEffect(() => {
     // Realizar la solicitud al servidor para obtener los grupos del usuario
@@ -23,37 +27,42 @@ function UserChannels({userGroup, currentGroup}) {
         'Content-Type': 'application/json'
       }
     })
-    .then(response => {
-      // Al recibir los datos, actualizar el estado con los grupos del usuario
-      setUserGroups(response.data.data);
+      .then(response => {
+        // Al recibir los datos, actualizar el estado con los grupos del usuario
+        setUserGroups(response.data.data);
 
-      let data = response.data.data.map(group => (
-        <li key={group.id} className="mb-4 group cursor-pointer" onClick={() => handleGroupClick(group)}>
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full overflow-hidden">
-              <img
-                src={group.image || 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'}
-                alt="Grupo"
-                className="w-full h-full object-cover group-hover:scale-110 transition-all"
-              />
-            </div>
-            <div className="ml-2">
-              <h3 className="text-sm text-white font-semibold group-hover:scale-110 transition-all">{group.name}</h3>
-              <p className="text-xs text-white group-hover:scale-110 transition-all">{group.description}</p>
-            </div>
-          </div>
-        </li>
-      ))
-      setgrouphtml(data)
-      console.log("datos grupos")
-      console.log(response.data.data)
-      userGroup(response.data.data)
-    })
-    .catch(error => {
-      console.error('Error al obtener los grupos del usuario:', error);
-      // Manejar el error, por ejemplo, mostrar un mensaje al usuario
-    });
-  }, []); // La dependencia vacÃ­a asegura que este efecto se ejecute solo una vez al montar el componente
+        let data = response.data.data.map(group => {
+          if (group.name.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return (
+              <li key={group.id} className="mb-4 group cursor-pointer" onClick={() => handleGroupClick(group)}>
+                <div className="flex items-center">
+                  <div className="w-8 h-8 rounded-full overflow-hidden">
+                    <img
+                      src={group.image || 'https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'}
+                      alt="Grupo"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-all"
+                    />
+                  </div>
+                  <div className="ml-2">
+                    <h3 className="text-sm text-white font-semibold group-hover:scale-110 transition-all">{group.name}</h3>
+                    <p className="text-xs text-white group-hover:scale-110 transition-all">{group.description}</p>
+                  </div>
+                </div>
+              </li>
+            );
+          }
+          return null; // Retorna null para los grupos que no coinciden con la búsqueda
+        });
+        setgrouphtml(data)
+        console.log("datos grupos")
+        console.log(response.data.data)
+        userGroup(response.data.data)
+      })
+      .catch(error => {
+        console.error('Error al obtener los grupos del usuario:', error);
+        // Manejar el error, por ejemplo, mostrar un mensaje al usuario
+      });
+  }, [searchTerm]); // La dependencia vacÃ­a asegura que este efecto se ejecute solo una vez al montar el componente
 
   return (
     <>

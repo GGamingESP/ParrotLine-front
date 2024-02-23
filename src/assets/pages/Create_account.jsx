@@ -1,5 +1,5 @@
-import parrot3 from '../images/parrot3.png'
-import parrot4 from '../images/parrot4.png'
+import parrot3 from '../images/parrot3.webp'
+import parrot4 from '../images/parrot4.webp'
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
