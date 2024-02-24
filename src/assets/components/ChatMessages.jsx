@@ -287,6 +287,7 @@ function ChatMessages() {
                   alt="Imagen del Grupo"
                   className="w-20 h-20 rounded-full object-cover mb-2 cursor-pointer"
                 />
+
               </div>
 
               {/* Nombre del grupo */}

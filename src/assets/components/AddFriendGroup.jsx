@@ -25,7 +25,7 @@ function AddFriendGroup() {
 
       <button
         className="text-white  hover:bg-purple-600 transition-colors duration-300 tooltip rounded-full flex items-center justify-center w-9 h-9"
-        data-tip="Create aGroup"
+        data-tip="Create a Group"
         onClick={() => document.getElementById("modal_add_group").showModal()}
       >
         <MdGroupAdd size={27} />
@@ -101,14 +101,14 @@ function InviteGroupModal() {
 
         <div className="text-center">
           <h2 className="text-2xl text-white font-semibold mb-4">
-            Unirse a un Grupo
+            Join a Group
           </h2>
           <form onSubmit={handleSubmit}>
             <input
               type="text"
               name="GroupID"
               onChange={(e) => setGroupId(e.target.value)}
-              placeholder="ID del Grupo"
+              placeholder="Group ID"
               className="w-full border text-white border-gray-300 p-3 rounded-md mb-4 focus:outline-none focus:border-blue-500"
             />
             <button
@@ -116,7 +116,7 @@ function InviteGroupModal() {
               className="btn bg-blue-500 text-white rounded-md px-6 py-3 transition duration-300 hover:bg-blue-600"
             >
               <FaUserPlus className="inline-block mr-2" size={18} />
-              Entrar al Grupo
+              Enter the Group
             </button>
           </form>
         </div>

@@ -1,38 +1,34 @@
-// UserProfile.js
 import { useState, useEffect } from "react";
-import {
-  FaCog,
-  FaUserCircle,
-  FaPen,
-  FaPaintBrush,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { FaCog, FaUserCircle, FaPen, FaPaintBrush, FaSignOutAlt } from "react-icons/fa";
 import axios from "axios";
+
 function UserProfile() {
   const [isHovered, setHovered] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
   const [isNameEditMode, setNameEditMode] = useState(false);
   const [isDescriptionEditMode, setDescriptionEditMode] = useState(false);
-  const [name, setName] = useState("John");
-  const [description, setDescription] = useState("Tu Descripción");
+  const [name, setName] = useState("");
+  const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [editedName, setEditedName] = useState(name);
+  const [editedDescription, setEditedDescription] = useState(description);
 
   const handleNameEdit = () => {
     setNameEditMode(!isNameEditMode);
   };
+
   const handleDescriptionEdit = () => {
     setDescriptionEditMode(!isDescriptionEditMode);
   };
 
   const handleNameChange = (e) => {
-    setName(e.target.value);
+    setEditedName(e.target.value);
   };
 
   const handleDescriptionChange = (e) => {
-    setDescription(e.target.value);
+    setEditedDescription(e.target.value);
   };
 
   const handleFileChange = async (e) => {
@@ -94,7 +90,7 @@ function UserProfile() {
     axios
       .put(
         `https://ivan.informaticamajada.es/api/user/${user.user.id}`,
-        { name: editedName, description: '' }, // Enviar el nuevo nombre de usuario al servidor
+        { name: editedName, description: user.user.description },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -104,10 +100,7 @@ function UserProfile() {
       )
       .then((response) => {
         // Manejar la respuesta del servidor
-        console.log(
-          "Nombre de usuario actualizado correctamente:",
-          response.data
-        );
+        console.log("Nombre de usuario actualizado correctamente:", response.data);
         // Actualizar el nombre de usuario localmente
         setName(editedName);
         // Finalizar el modo de edición
@@ -120,21 +113,33 @@ function UserProfile() {
   };
 
   const handleUpdateDescription = () => {
-    // Lógica para enviar cambios al servidor
-    // ...
+    // Realizar la solicitud al servidor para actualizar la descripción del usuario
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    const token = user.token;
 
-    // Actualizar el sessionStorage después de la respuesta exitosa del servidor
-    const updatedUser = {
-      ...JSON.parse(sessionStorage.getItem("currentUser")),
-      user: {
-        ...JSON.parse(sessionStorage.getItem("currentUser")).user,
-        description,
-      },
-    };
-    sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
-
-    // Finalizar el modo de edición
-    setDescriptionEditMode(false);
+    axios
+      .put(
+        `https://ivan.informaticamajada.es/api/user/${user.user.id}`,
+        { name: user.user.name, description: editedDescription },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        // Manejar la respuesta del servidor
+        console.log("Descripción de usuario actualizada correctamente:", response.data);
+        // Actualizar la descripción del usuario localmente
+        setDescription(editedDescription);
+        // Finalizar el modo de edición
+        setDescriptionEditMode(false);
+      })
+      .catch((error) => {
+        console.error("Error al actualizar la descripción de usuario:", error);
+        // Aquí puedes manejar el error de acuerdo a tus necesidades
+      });
   };
 
   const handleLogout = () => {
@@ -157,7 +162,7 @@ function UserProfile() {
 
   return (
     <div className="flex items-center mb-4">
-      <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+      <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
           onClick={() => document.getElementById("modal_1").showModal()}
@@ -165,21 +170,24 @@ function UserProfile() {
           alt="User profile"
         />
       </div>
-      <div className="ml-1 flex items-center">
-        <h3 className="text-2xl text-white font-semibold mr-2">{name}</h3>
+      <div className="flex items-center">
+        {name.length > 7 ? (
+          <h3 className="text-2xl text-white font-semibold overflow-hidden whitespace-nowrap overflow-ellipsis">{name.substring(0, 7)}...</h3>
+        ) : (
+          <h3 className="text-2xl text-white font-semibold">{name}</h3>
+        )}
         {/* Botón de ajustes */}
-        <div className="relative ml-16 mt-3">
+        <div className="relative ml-4">
           <button
-            className="text-white hover:bg-yellow-400 transition-colors duration-300 tooltip  tooltip-bottom rounded-full flex items-center justify-center w-9 h-9"
+            className="text-white hover:bg-yellow-400 transition-colors duration-300 tooltip tooltip-bottom rounded-full flex items-center justify-center w-9 h-9"
             data-tip="Settings"
             onClick={() => document.getElementById("modal_1").showModal()}
           >
             <FaCog size={22} />
           </button>
 
-          {/* Modal */}
           <dialog id="modal_1" className="modal">
-            <div className="modal-box p-4">
+            <div className="modal-box p-4 border-grey bg-[#4aa88f] rounded-lg shadow-lg">
               <form method="dialog">
                 <button
                   className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
@@ -189,165 +197,104 @@ function UserProfile() {
                 </button>
               </form>
 
-              <div className="flex items-center justify-center mb-4">
-                {/* Avatar */}
-                <div
-                  className="relative group"
-                  onMouseEnter={() => setHovered(true)}
-                  onMouseLeave={() => setHovered(false)}
+              {/* Nombre */}
+              <div className="text-lg font-semibold mb-4 bg-blue-500 text-white rounded-lg p-2">
+                <h4
+                  className="text-lg font-semibold cursor-pointer transition-transform transform hover:scale-105"
+                  onClick={() => setNameEditMode(!isNameEditMode)}
                 >
-                  <input
-                    type="file"
-                    id="fileInput"
-                    className="hidden"
-                    onChange={(e) => {
-                      handleFileChange(e);
-                      handleImageChange(); // Actualiza la imagen al seleccionar un archivo
-                      handleSaveChanges(); // Envía automáticamente la imagen al seleccionar un archivo
-                    }}
-                  />
-                  <img
-                    src={image}
-                    alt="Avatar Logo"
-                    className={`w-20 h-20 rounded-full object-cover ${
-                      isHovered ? "filter blur-sm" : ""
-                    }`}
-                  />
-
-                  {isHovered && (
-                    <span
-                      className="absolute top-0 right-0 m-2 cursor-pointer text-xl text-gray-500"
-                      title="Personalizar"
-                      onClick={() =>
-                        document.getElementById("fileInput").click()
-                      }
-                    >
-                      🎨
-                    </span>
-                  )}
-                  {isEditMode && (
-                    <div className="absolute bg-white p-4 border rounded">
-                      <label className="block mb-2 text-gray-600 cursor-pointer">
-                        Seleccionar archivo
-                        <input
-                          type="file"
-                          className="hidden"
-                          onChange={handleFileChange}
-                        />
-                      </label>
-                      <button
-                        className="mt-2 px-2 py-1 bg-blue-500 text-white rounded "
-                        onClick={handleSaveChanges}
-                      >
-                        Guardar cambios
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  <FaUserCircle className="inline-block mr-2" size={18} />
+                  Name: {name}
+                </h4>
               </div>
-
-              {/*Nombre*/}
-              <div className="text-lg font-semibold mb-4">
-                <div className="flex items-center justify-between">
-                  <h4
-                    className="text-lg font-semibold text-blue-500 cursor-pointer transition-transform transform hover:scale-105"
-                    onClick={() => setNameEditMode(!isNameEditMode)}
+              {isNameEditMode ? (
+                <>
+                  <textarea
+                    value={editedName}
+                    onChange={handleNameChange}
+                    className="w-full border p-2 rounded"
+                    placeholder={name}
+                  />
+                  <button
+                    className="mt-2 mb-3 px-2 py-1 bg-blue-500 text-white rounded focus:outline-none transition-transform transform hover:scale-105"
+                    onClick={handleUpdateName}
                   >
-                    <FaUserCircle className="inline-block mr-2" size={18} />
-                    Name: {name}
-                  </h4>
-                </div>
-                {isNameEditMode ? (
-                  <>
-                    <textarea
-                      value={editedName}
-                      onChange={(e) => setEditedName(e.target.value)} // Actualiza el valor editado del nombre
-                      className="w-full border p-2 rounded"
-                      placeholder="Write your name..."
-                    />
-                    <button
-                      className="mt-2 px-2 py-1 bg-blue-500 text-white rounded focus:outline-none transition-transform transform hover:scale-105"
-                      onClick={handleUpdateName}
-                    >
-                      Guardar
-                    </button>
-                  </>
-                ) : null}
-              </div>
+                    Guardar
+                  </button>
+                </>
+              ) : null}
 
               {/* Descripción */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between">
-                  <h4
-                    className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none  transition-transform transform hover:scale-105"
-                    onClick={handleDescriptionEdit}
-                  >
-                    <FaPen className="inline-block mr-2" size={18} />
-                    Description
-                  </h4>
-                </div>
-                {isDescriptionEditMode && (
-                  <div>
-                    <textarea
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      className="w-full border p-2 rounded"
-                      placeholder="Write your Description..."
-                    />
-                    {/* Botón de Guardar */}
-                    <button
-                      className="mt-2 px-2 py-1 bg-blue-500 text-white rounded  transition-transform transform hover:scale-105"
-                      onClick={handleUpdateDescription}
-                    >
-                      Guardar
-                    </button>
-                  </div>
-                )}
+              <div className="mb-4 bg-blue-500 text-white rounded-lg p-2">
+                <h4
+                  className="text-lg font-semibold cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
+                  onClick={handleDescriptionEdit}
+                >
+                  <FaPen className="inline-block mr-2" size={18} />
+                  Description
+                </h4>
               </div>
-
-              {/* Personalización */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between">
+              {isDescriptionEditMode && (
+                <div>
+                  <textarea
+                    value={editedDescription}
+                    onChange={handleDescriptionChange}
+                    className="w-full border p-2 rounded"
+                    placeholder={description}
+                  />
+                  {/* Botón de Guardar */}
                   <button
-                    className="text-lg font-semibold text-blue-500 cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
-                    onClick={() => setIsCustomizationOpen(!isCustomizationOpen)}
+                    className="mt-2 mb-3 px-2 py-1 bg-blue-500 text-white rounded  transition-transform transform hover:scale-105"
+                    onClick={handleUpdateDescription}
                   >
-                    <FaPaintBrush className="inline-block mr-2" size={18} />
-                    Personalization
+                    Guardar
                   </button>
                 </div>
-                {isCustomizationOpen && (
-                  <div className="mt-2 flex items-center space-x-4">
-                    <div className="text-lg font-semibold">
-                      Selecciona un color:
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div
-                        className="w-8 h-8 rounded-full cursor-pointer bg-gray-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange("#FF0000")}
-                      ></div>
-                      <div
-                        className="w-8 h-8 rounded-full cursor-pointer bg-green-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange("#00FF00")}
-                      ></div>
-                      <div
-                        className="w-8 h-8 rounded-full cursor-pointer bg-blue-500  transition-transform transform hover:scale-105"
-                        onClick={() => handleColorChange("#0000FF")}
-                      ></div>
-                      {/* Agrega más colores aquí según sea necesario */}
-                    </div>
-                  </div>
-                )}
+              )}
+
+              {/* Personalización */}
+              <div className="mb-4 bg-blue-500 text-white rounded-lg p-2">
+                <button
+                  className="text-lg font-semibold cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
+                  onClick={() => setIsCustomizationOpen(!isCustomizationOpen)}
+                >
+                  <FaPaintBrush className="inline-block mr-2" size={18} />
+                  Personalization
+                </button>
               </div>
+              {isCustomizationOpen && (
+                <div className="mt-2 flex items-center space-x-4">
+                  <div className="text-lg text-white font-semibold mb-3">
+                    Selecciona un color:
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div
+                      className="w-8 h-8 mb-3 rounded-full cursor-pointer bg-gray-500  transition-transform transform hover:scale-105"
+                      onClick={() => handleColorChange("#FF0000")}
+                    ></div>
+                    <div
+                      className="w-8 h-8 mb-3 rounded-full cursor-pointer bg-green-500  transition-transform transform hover:scale-105"
+                      onClick={() => handleColorChange("#00FF00")}
+                    ></div>
+                    <div
+                      className="w-8 h-8 mb-3 rounded-full cursor-pointer bg-blue-500  transition-transform transform hover:scale-105"
+                      onClick={() => handleColorChange("#0000FF")}
+                    ></div>
+                    {/* Agrega más colores aquí según sea necesario */}
+                  </div>
+                </div>
+              )}
 
               {/* Logout */}
-              <button
-                className="text-red-500 text-lg font-semibold cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
-                onClick={() => handleLogout()}
-              >
-                <FaSignOutAlt className="inline-block mr-2" size={18} />
-                Logout
-              </button>
+              <div className="bg-red-500 text-white rounded-lg p-2">
+                <button
+                  className="text-lg font-semibold cursor-pointer focus:outline-none transition-transform transform hover:scale-105"
+                  onClick={handleLogout}
+                >
+                  <FaSignOutAlt className="inline-block mr-2" size={18} />
+                  Logout
+                </button>
+              </div>
             </div>
 
             <form
