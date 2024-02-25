@@ -20,7 +20,7 @@ function ChatMessages() {
   const [uploadDesp, setUploadDesp] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
-
+  const altUser = JSON.parse(sessionStorage.getItem("currentUser"));
   // useEffect para cuando se cambia de grupo
 
   useEffect(() => {
@@ -125,6 +125,20 @@ function ChatMessages() {
     }
   };
 
+  const blockUser = (id) => {
+    if(confirm("Estas seguro de que quieres bloquear a el usuario")){
+      axios.get(`https://ivan.informaticamajada.es/api/blockFriend/${id}`,{
+        headers: {
+          Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
+            }`,
+          "Content-Type": "application/json",
+        },
+      }).then(function (response) {
+        fetchMessagesNoRepit();
+      })
+    }
+  }
+
   const sendMessageWithImage = () => {
     console.log(selectedFile)
     let imagen = new FormData();
@@ -225,7 +239,8 @@ function ChatMessages() {
 
   const leaveGroup = () => {
     // Aquí envías una solicitud al servidor para salir del grupo
-    axios
+    if(confirm("Estas seguro de que quieres salirte del grupo")){
+      axios
       .post(
         `https://ivan.informaticamajada.es/api/leaveGroup/${currentGroup.id}`,
         {},
@@ -246,6 +261,7 @@ function ChatMessages() {
         // Manejar errores
         console.error("Error al salir del grupo:", error);
       });
+    }
   };
 
   
@@ -317,6 +333,9 @@ function ChatMessages() {
                       />
                       {/* Nombre del usuario */}
                       <p className="text-white">{user.name}</p>
+                      {user.id !== altUser.user.id && (
+                        <button className="btn btn-sm bg-red-400 hover:bg-red-500 text-white rounded-md px-3 py-1 ms-10" onClick={() => { blockUser(user.id) }}>Bloquear al usuario</button>
+                      )}
                     </div>
                   ))}
               </div>
