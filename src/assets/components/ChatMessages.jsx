@@ -12,11 +12,9 @@ function ChatMessages() {
   const [currentMessage, setCurrentMessage] = useState("");
   const [currentRealTime, setCurrentRealTime] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [mediaDesp, setMediaDesp] = useState(false);
   const [mensajeData, setMensajeData] = useState([]);
   const currentGroup = useContext(MyCurrentGroupContext);
   const messagesEndRef = useRef(null); // Referencia a la última conversación
-  const [initialScrollDone, setInitialScrollDone] = useState(false);
   const [uploadDesp, setUploadDesp] = useState(false);
 
   const user = JSON.parse(sessionStorage.getItem("currentUser"));

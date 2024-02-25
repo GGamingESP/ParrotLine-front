@@ -10,10 +10,6 @@ function UserChannels({ userGroup, currentGroup }) {
   const misGrupos = useContext(MyCurrentGroupContext);
   const [searchTerm, setSearchTerm] = useState('');
 
-  const filteredGroups = userGroups.filter(group => {
-    return group.name.toLowerCase().includes(searchTerm.toLowerCase());
-  });
-
   const handleGroupClick = (group) => {
     console.log(group);
     currentGroup(group);
