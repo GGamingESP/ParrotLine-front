@@ -1,3 +1,5 @@
+
+// COMPONENTES
 import UserProfile from "../components/UserProfile";
 import SearchBar from "../components/SearchBar";
 import AddFriendGroup from "../components/AddFriendGroup";
@@ -5,6 +7,8 @@ import UserChannels from "../components/UserChannels";
 import ChatMessages from "../components/ChatMessages";
 import MyGroupContext from "../components/GroupContext";
 import MyCurrentGroupContext from "../components/CurrentGroupContext";
+
+// ICONOS
 import { useEffect, useState } from 'react';
 
 
@@ -14,7 +18,8 @@ function Web() {
     const MyCurrentGroupProvider = MyCurrentGroupContext.Provider;
     const [MyGroups, setMyGroups] = useState([])
     const [CurrentGroup, setCurrentGroup] = useState({})
-     const [searchTerm, setSearchTerm] = useState("");
+
+    // Logica rederigirte a /login si entras a /web sin logearte previamente
     useEffect(() => {
         const user = JSON.parse(sessionStorage.getItem("currentUser"));
         if (user) {
@@ -24,6 +29,8 @@ function Web() {
         }
     });
 
+    // Actualiza y enseña  los canales de los grupos
+    
     const actualizarEstadoGrupo = (nuevoEstado) => {
         setMyGroups(nuevoEstado);
     }
@@ -41,7 +48,7 @@ function Web() {
                         <UserProfile />
 
                         {/* Botón de búsqueda */}
-                        <SearchBar setSearchTerm={setSearchTerm} />
+                        <SearchBar/>
 
                         {/* Iconos de "Agregar amigo" y "Crear grupo" */}
                         <AddFriendGroup />

@@ -1,17 +1,24 @@
-import parrot3 from '../images/parrot3.webp'
-import parrot4 from '../images/parrot4.webp'
+
+// COMPONENTES
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import { Register_url } from '../../data/data';
 
 
-function Create_password() {
-  const handleRegister = (event) => {
-    event.preventDefault(); // Evitar que el formulario se envíe automáticamente
+// IMAGENES
+import parrot3 from '../images/parrot3.webp'
+import parrot4 from '../images/parrot4.webp'
 
-    // Validar los campos aquí
+
+function Create_password() {
+
+  // Al crear los datos  si los datos son correctos, sale un aviso de creadoy te redirige al login
+  // si es erroneo te saldra un aviso para que vuelvas a intentarlo.
+  const handleRegister = (event) => {
+    event.preventDefault();
+
+    // Validar los campos
     const email = event.target.email.value;
     const name = event.target.name.value;
     const password = event.target.password.value;
@@ -23,9 +30,6 @@ function Create_password() {
       return;
     }
 
-    // Aquí puedes realizar cualquier acción adicional, como enviar la solicitud de inicio de sesión
-    console.log('Campos completados:', { email, password });
-
     axios.post(Register_url, {
       email: email,
       name: name,
@@ -33,9 +37,9 @@ function Create_password() {
       password_confirmation: password_confirmation,
       description: description
     }).then(function (response) {
-      toast.success('Creacion de cuenta exitoso', { autoClose: 1500 }); // Mensaje de éxito durante 3 segundos
+      toast.success('Creacion de cuenta exitoso', { autoClose: 1500 }); // Mensaje de éxito durante 1,5 segundos
       setTimeout(() => {
-        window.location.href = '/Login'; // Redirige a la página deseada después de 3 segundos
+        window.location.href = '/Login'; // Redirige a la página deseada después de 2 segundos
       }, 2000);
       console.log(response.data)
 
@@ -49,12 +53,16 @@ function Create_password() {
 
   return (
     <div className=" bg-[#1b8daf] min-h-screen flex items-center justify-end relative " style={{
+      //  ESTILO FONDO DE LA PAGINA
       backdropFilter: 'blur(10px)',
       backgroundImage: 'linear-gradient(to bottom right, #8ACB88 10%, #5DB3E8 , #1F1F1F , #A05CBF 130%)',
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed',
     }}>
+
+      {/* SECCION LOGOTIPO/NOMBRE/DESCRIPCION PARROTLINE */}
+
       <div className="hero-content flex-col lg:flex-row-reverse  ">
         <div className="text-center lg:text-left ">
           <h1 className="text-7xl font-bold hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PARROTLINE</h1>
@@ -62,6 +70,9 @@ function Create_password() {
         </div>
         <img src={parrot4} alt="Descripción de la imagen" className="w-40 hidden md:block" />
       </div>
+
+      {/* SECCION FORMULARIO */}
+            
       <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[42rem]">
         <div className="max-w-md mx-auto ">
           <form onSubmit={handleRegister}>
@@ -110,7 +121,7 @@ function Create_password() {
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm text-gray-600">
-                  Pasword
+                  Password
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-2">
@@ -128,7 +139,7 @@ function Create_password() {
               </div>
               <div>
                 <label htmlFor="password" className="block mb-2 text-sm text-gray-600">
-                  Confirm Pasword
+                  Confirm Password
                 </label>
                 <div className="relative">
                   <span className="absolute inset-y-0 left-0 flex items-center pl-2">

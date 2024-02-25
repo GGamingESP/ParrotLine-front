@@ -1,4 +1,5 @@
 
+// IMAGENES
 import Parrot5 from './assets/images/parrot5.webp';
 import lorito from './assets/images/lorito.webp';
 import movil from './assets/images/movil.webp';
@@ -6,6 +7,7 @@ import movil2 from './assets/images/movil2.webp';
 import parrot8 from './assets/images/parrot8.webp';
 import capa from './assets/images/capa.webp';
 
+// COMPONENTES
 import Navbar from "./assets/pages/Navbar";
 import Footer from './assets/pages/Footer';
 

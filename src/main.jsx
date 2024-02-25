@@ -1,8 +1,14 @@
+
+// IMPORTES REACT
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
-import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import './index.css'
+
+// REACT ROUTE
+import { RouterProvider, createBrowserRouter } from 'react-router-dom'
+
+// COMPONENTES/PAGINAS
 import About_us from './assets/pages/About_us.jsx'
 import Login from './assets/pages/Login.jsx'
 import Privacy from './assets/pages/Privacy.jsx'
@@ -12,6 +18,7 @@ import Forgot_password from './assets/pages/Forgot_password.jsx'
 import Web from './assets/pages/Web.jsx'
 
 
+// CREANDO ENRUTADOR
 const router = createBrowserRouter([
   {
     path: "/",

@@ -1,3 +1,5 @@
+
+// COMPONENTES
 import Navbar from "./Navbar";
 import Footer from "./Footer";
 
@@ -62,7 +64,6 @@ function Privacy() {
                         Our site may contain links to other sites that are not operated by us. If you click on a third-party link, you will be directed to that third party s site. We strongly advise you to review the Privacy Policy of every site you visit.
                     </p>
 
-                    {/* Include more sections as needed based on your privacy policy content. */}
                 </div>
 
 

@@ -1,3 +1,5 @@
+
+// IMAGENES
 import parrot3 from '../images/parrot3.webp'
 import parrot4 from '../images/parrot4.webp'
 
@@ -6,12 +8,16 @@ function Forgot_password() {
 
     return (
         <div className=" bg-[#1b8daf] min-h-screen flex items-center justify-end relative " style={{
+            //  ESTILO FONDO DE LA PAGINA
             backdropFilter: 'blur(10px)',
             backgroundImage: 'linear-gradient(to bottom right, #8ACB88 10%, #5DB3E8 , #1F1F1F , #A05CBF 130%)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed',
         }}>
+
+            {/* SECCION LOGOTIPO/NOMBRE/DESCRIPCION PARROTLINE */}
+
             <div className="hero-content flex-col lg:flex-row-reverse  ">
                 <div className="text-center lg:text-left ">
                     <h1 className="text-7xl font-bold hidden md:block" style={{ background: 'linear-gradient(to right, black, green)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PARROTLINE</h1>
@@ -19,6 +25,9 @@ function Forgot_password() {
                 </div>
                 <img src={parrot4} alt="Descripción de la imagen" className="w-40 hidden md:block" />
             </div>
+            
+            {/* SECCION FORMULARIO */}
+
             <div className="bg-gradient-to-b from-[#53dbaf] via-[#53dbaf] text-white p-6 rounded-md shadow-md mx-auto w-full max-w-md h-[29rem]">
                 <div className="max-w-md mx-auto ">
                     <form>

@@ -1,4 +1,6 @@
 
+// PAGINA 404 PREDEFINIDA
+
 function Not_found() {
   return (
     <>

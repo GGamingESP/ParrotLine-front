@@ -1,6 +1,11 @@
-import { FaLaptopCode, FaServer, FaLightbulb, FaUsers, FaChartBar } from "react-icons/fa";
+
+// COMPONENTES
 import Navbar from "./Navbar";
 import Footer from "./Footer";
+
+// ICONOS
+import { FaLaptopCode, FaServer, FaLightbulb, FaUsers, FaChartBar } from "react-icons/fa";
+
 function AboutUs() {
     return (
         <>
