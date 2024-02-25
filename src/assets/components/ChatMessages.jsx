@@ -107,7 +107,8 @@ function ChatMessages() {
   ];
 
   const deleteMessage = (id) => {
-    axios
+    if(confirm("Estas seguro de que quieres eliminar el mensaje")){
+      axios
       .delete(`https://ivan.informaticamajada.es/api/message/${id}`, {
         headers: {
           Authorization: `Bearer ${JSON.parse(sessionStorage.getItem("currentUser")).token
@@ -116,11 +117,12 @@ function ChatMessages() {
         },
       })
       .then(function (response) {
-        fetchMessages();
+        fetchMessagesNoRepit();
       })
       .catch((error) => {
         console.error(error);
       });
+    }
   };
 
   const sendMessageWithImage = () => {
