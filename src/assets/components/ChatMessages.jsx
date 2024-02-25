@@ -10,6 +10,7 @@ import { GoArrowDown } from "react-icons/go";
 function ChatMessages() {
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
+  const [currentRealTime, setCurrentRealTime] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [mediaDesp, setMediaDesp] = useState(false);
   const [mensajeData, setMensajeData] = useState([]);
@@ -23,6 +24,9 @@ function ChatMessages() {
   // useEffect para cuando se cambia de grupo
 
   useEffect(() => {
+    if(currentRealTime){
+      clearTimeout(currentRealTime)
+    }
     setMessages([]);
     fetchMessages();
     console.log(currentGroup);
@@ -42,6 +46,8 @@ function ChatMessages() {
         );
         setMessages(response.data.data);
         setMensajeData(response.data.data);
+        let newRealTime = setTimeout(() =>{fetchMessages()}, 3000);
+        setCurrentRealTime(newRealTime);
         console.log(response);
       } catch (error) {
         console.error("Error fetching messages:", error);
