@@ -117,19 +117,6 @@ function ChatMessages() {
       });
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      // Verificar si selectedFile no es nulo antes de llamar a sendMessageWithImage
-      console.log("falta subir la imagen")
-      if (selectedFile != null) {
-        console.log("preparando para subir la imagen")
-        sendMessageWithImage();
-      }
-    }
-  };
-
   const sendMessageWithImage = () => {
     console.log(selectedFile)
     let imagen = new FormData();
@@ -421,6 +408,14 @@ function ChatMessages() {
                   alt="Image"
                   className="w-full max-w-96 max-h-96 object-contain mx-auto block" // Establecer un tamaño máximo para la imagen
                 />
+                
+              )}
+              {value.image && value.image.url !== null && value.image.url.slice(-3) == "mp3" && (
+                <audio controls src={`https://ivan.informaticamajada.es/storage/${quitarPublic(
+                  value.image.url
+                )}`}
+                alt="Image"
+                className="w-full max-w-96 max-h-96 object-contain mx-auto block" ></audio>
               )}
               {value.text}
             </div>

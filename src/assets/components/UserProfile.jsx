@@ -40,6 +40,14 @@ function UserProfile() {
     }
   };
 
+  function quitarPublic(str) {
+    // Longitud de "public/"
+    const publicLength = 7;
+
+    // Corta la cadena desde el índice publicLength
+    return str.slice(publicLength);
+  }
+
   const handleSaveChanges = () => {
     setEditMode(false);
   };
@@ -47,7 +55,7 @@ function UserProfile() {
   const handleImageChange = () => {
     // Verificar el tamaño del archivo y otras validaciones...
     // 2 megabytes
-    const formData = new FormData();
+    let formData = new FormData();
     formData.append("imagen", selectedFile);
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
     const token = user.token;
@@ -60,6 +68,7 @@ function UserProfile() {
       },
     })
       .then((response) => {
+        console.log(response);
         // Manejar la respuesta del servidor
         if (response.status === 200) {
           console.log("Imagen subida correctamente.");
@@ -164,8 +173,8 @@ function UserProfile() {
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm cursor-pointer"
           onClick={() => document.getElementById('my_modal_2').showModal()}
-          src={user.image
-            ? "https://ivan.informaticamajada.es/" + user.image
+          src={user.user.image
+            ? "https://ivan.informaticamajada.es/storage/" + quitarPublic(user.user.image.url)
             : "/default-user.webp"}
           alt="User profile"
         />
