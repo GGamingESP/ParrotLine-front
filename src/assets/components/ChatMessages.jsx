@@ -253,6 +253,7 @@ function ChatMessages() {
       });
   };
 
+  
   return (
     <div className="flex-1 flex flex-col bg-white ">
       <div className="w-full bg-[#4aa88f] p-4  flex items-center h-16">
@@ -297,13 +298,7 @@ function ChatMessages() {
               <p className="text-sm mb-2 text-white text-center">{currentGroup.description}</p>
 
               {/* ID del grupo con estilo decorativo */}
-              <div className="border-2 border-gray-300 rounded p-2 mb-4 text-center bg-[#41947d] cursor-pointer hover:opacity-80 transition-opacity"
-                onClick={() => {
-                    // Lógica para copiar el ID del grupo
-                    navigator.clipboard.writeText(currentGroup.id);
-                    // Muestra el mensaje de DaysiUI
-                    alert("ID del grupo copiado con éxito");
-                }}>
+              <div className="border-2 border-gray-300 rounded p-2 mb-4 text-center bg-[#41947d] cursor-pointer hover:opacity-80 transition-opacity">
                 <span className="font-bold mr-2 text-white">ID del Grupo:</span>
                 <span className="text-white">{currentGroup.id}</span>
               </div>

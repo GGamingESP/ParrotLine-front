@@ -44,42 +44,34 @@ function UserProfile() {
     setEditMode(false);
   };
 
-  const handleImageChange = (file) => {
-    // Verificar el tamaño del archivo
-    if (file.size <= 2 * 1024 * 1024) {
-      // 2 megabytes
-      const imageURL = URL.createObjectURL(file);
-      setImage(imageURL);
-      // Actualizar imagen en la sesión
-      const user = JSON.parse(sessionStorage.getItem("currentUser"));
-      const updatedUser = { ...user, user: { ...user.user, image: imageURL } };
-      sessionStorage.setItem("currentUser", JSON.stringify(updatedUser));
+  const handleImageChange = () => {
+    // Verificar el tamaño del archivo y otras validaciones...
+    // 2 megabytes
+    const formData = new FormData();
+    formData.append("imagen", selectedFile);
+    const user = JSON.parse(sessionStorage.getItem("currentUser"));
+    const token = user.token;
 
-      // Subir la imagen al servidor
-      const formData = new FormData();
-      formData.append("imagen", file);
-      let token = user.token;
-      axios
-        .post("https://ivan.informaticamajada.es/api/saveUserImage", formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          // Manejar la respuesta del servidor
-          if (response.ok) {
-            console.log("Imagen subida correctamente.");
-          } else {
-            console.error("Error al subir la imagen:", response.statusText);
-          }
-        })
-        .catch((error) => {
-          console.error("Error al subir la imagen:", error);
-        });
-    } else {
-      alert("La imagen excede el límite de tamaño de 2 megabytes.");
-    }
+    // Subir la imagen al servidor
+    axios.post("https://ivan.informaticamajada.es/api/saveUserImage", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    })
+      .then((response) => {
+        // Manejar la respuesta del servidor
+        if (response.status === 200) {
+          console.log("Imagen subida correctamente.");
+          // Actualizar la imagen en el estado local
+          setImage(response.data.url);
+        } else {
+          console.error("Error al subir la imagen:", response.statusText);
+        }
+      })
+      .catch((error) => {
+        console.error("Error al subir la imagen:", error);
+      });
   };
 
   const handleUpdateName = () => {
@@ -151,6 +143,8 @@ function UserProfile() {
     window.location.href = "/Login";
   };
 
+  const user = JSON.parse(sessionStorage.getItem("currentUser"));
+
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
     if (user) {
@@ -160,15 +154,35 @@ function UserProfile() {
     }
   }, []);
 
+  const handleImageClick = () => {
+    document.getElementById("subida").click();
+  };
+
   return (
     <div className="flex items-center mb-4">
       <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
         <img
-          className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm"
-          onClick={() => document.getElementById("modal_1").showModal()}
-          src={image}
+          className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm cursor-pointer"
+          onClick={() => document.getElementById('my_modal_2').showModal()}
+          src={user.image
+            ? "https://ivan.informaticamajada.es/" + user.image
+            : "/default-user.webp"}
           alt="User profile"
         />
+
+        {/* Modal para subir imagen perfil usuario*/}
+        <dialog id="my_modal_2" className="modal">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">SUBIR IMAGEN</h3>
+            <p className="py-4">Suba la imagen que deseea tener en el perfil</p>
+
+            <input type="file" name="subida" id="subida" className="text-white" onChange={(e) => { setSelectedFile(e.target.files[0]); }} />
+            <button onClick={() => { handleImageChange() }} className="bg-blue-500 p-1 rounded-xl text-white m-1 hover:scale-105 transition-all">Subir la Imagen</button>
+          </div>
+          <form method="dialog" className="modal-backdrop">
+            <button>close</button>
+          </form>
+        </dialog>
       </div>
       <div className="flex items-center">
         {name.length > 7 ? (
@@ -307,8 +321,10 @@ function UserProfile() {
           </dialog>
         </div>
       </div>
+
     </div>
   );
 }
+
 
 export default UserProfile;
