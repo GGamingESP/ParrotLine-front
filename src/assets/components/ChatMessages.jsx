@@ -1,13 +1,19 @@
+// IMPORT REACT
 import { useEffect, useState, useRef, useContext } from "react";
+// ICONOS
 import { FaEllipsisV, FaPaperPlane, FaTimes } from "react-icons/fa";
 import { IoReload } from "react-icons/io5";
-import MyCurrentGroupContext from "../components/CurrentGroupContext";
-import axios from "axios";
 import { FcAddImage } from "react-icons/fc";
 import { BsEmojiLaughingFill } from "react-icons/bs";
 import { GoArrowDown } from "react-icons/go";
 
+// IMPORT NECESIDADES
+import MyCurrentGroupContext from "../components/CurrentGroupContext";
+import axios from "axios";
+
+// FUNCION PRINCIPAL
 function ChatMessages() {
+  // ESTADOS
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState("");
   const [currentRealTime, setCurrentRealTime] = useState(null);
@@ -17,6 +23,7 @@ function ChatMessages() {
   const messagesEndRef = useRef(null); // Referencia a la última conversación
   const [uploadDesp, setUploadDesp] = useState(false);
 
+  // SESSION STORAGE DEL USUARIO
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
   const altUser = JSON.parse(sessionStorage.getItem("currentUser"));
   // useEffect para cuando se cambia de grupo
@@ -30,6 +37,7 @@ function ChatMessages() {
     console.log(currentGroup);
   }, [currentGroup]);
 
+  // FUNCION MENSAJES DE GRUPO ACTUAL
   const fetchMessages = async () => {
     if (currentGroup && currentGroup.id) {
       try {
@@ -53,6 +61,7 @@ function ChatMessages() {
     }
   };
 
+  // LO MISMO QUE EL ANTERIOR PERO SIN REPETIRSE
   const fetchMessagesNoRepit = async () => {
     if (currentGroup && currentGroup.id) {
       const response = await axios
@@ -74,11 +83,12 @@ function ChatMessages() {
     }
   };
 
+  // EMOJI
   const handleEmojiSelect = (emoji) => {
     // Concatenar el emoji seleccionado con el texto existente en el campo de entrada
     setCurrentMessage(currentMessage + emoji);
   };
-
+  // LISTA DE EMOJIS
   const emojiList = [
     "\u{1F60A}",
     "\u{1F44D}",
@@ -103,7 +113,7 @@ function ChatMessages() {
     "\u{2615}",
     "\u{1F917}",
   ];
-
+  // FUNCION ELIMINAR MENSAJE
   const deleteMessage = (id) => {
     if(confirm("Estas seguro de que quieres eliminar el mensaje")){
       axios
@@ -122,7 +132,7 @@ function ChatMessages() {
       });
     }
   };
-
+  // FUNCION ELIMINAR MENSAJES
   const blockUser = (id) => {
     if(confirm("Estas seguro de que quieres bloquear a el usuario")){
       axios.get(`https://ivan.informaticamajada.es/api/blockFriend/${id}`,{
@@ -136,7 +146,7 @@ function ChatMessages() {
       })
     }
   }
-
+  // FUNCION ENVIAR MENSAJES CON ARCHIVOS / IMAGENES
   const sendMessageWithImage = () => {
     console.log(selectedFile)
     let imagen = new FormData();
@@ -222,11 +232,11 @@ function ChatMessages() {
         });
     }
   };
-
+  // FUNCION PARA BAJAR AL FINAL DE LA PAGINA
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
+  // FUNCION PARA QUITAR /PUBLIC DEL PRINCIPIO DE UN STRING
   function quitarPublic(str) {
     // Longitud de "public/"
     const publicLength = 7;
@@ -234,7 +244,7 @@ function ChatMessages() {
     // Corta la cadena desde el índice publicLength
     return str.slice(publicLength);
   }
-
+  // FUNCION PARA SALIR DEL GRUPO
   const leaveGroup = () => {
     // Aquí envías una solicitud al servidor para salir del grupo
     if(confirm("Estas seguro de que quieres salirte del grupo")){

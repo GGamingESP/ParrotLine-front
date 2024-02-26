@@ -1,4 +1,6 @@
+//  COSAS REACT
 import { useEffect, useState } from "react";
+// ICONOS
 import { MdGroupAdd } from "react-icons/md";
 import {
   FaTimes,
@@ -7,6 +9,7 @@ import {
   FaUserPlus,
   FaCheck,
 } from "react-icons/fa";
+// IMPORTS NECESIDADES
 import { Form } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
@@ -64,6 +67,7 @@ function AddFriendGroup() {
     </div>
   );
 }
+// MODAL INVITAR PERSONA
 function InviteGroupModal() {
   const [groupId, setGroupId] = useState(""); // Estado para almacenar la ID del grupo
 
@@ -128,6 +132,7 @@ function InviteGroupModal() {
   );
 }
 
+// MODAL AMIGOS
 function FriendModal() {
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
   const [friendRequest, SetRequest] = useState([]);
@@ -182,6 +187,7 @@ function FriendModal() {
       });
   }, []);
 
+  // MODAL ACEPTAR AMIGOS
   function AcceptFriend(event) {
     axios
       .get(
@@ -205,7 +211,7 @@ function FriendModal() {
   function RejectFriend(event) {
     // Lógica para rechazar la solicitud de amigo
   }
-
+  // ENVIAR SOLICITUD DE AMISTAD
   function SendFriendRequest(event) {
     event.preventDefault();
     const id = event.target.FriendId.value;
@@ -276,7 +282,7 @@ function FriendModal() {
     </dialog>
   );
 }
-
+// MODAL GRUPOS
 function GroupModal() {
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 

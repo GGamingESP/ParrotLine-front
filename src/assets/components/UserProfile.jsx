@@ -1,8 +1,12 @@
+// IMPORTS REACT
 import { useState, useEffect } from "react";
+// LOGOS
 import { FaCog, FaUserCircle, FaPen, FaPaintBrush, FaSignOutAlt } from "react-icons/fa";
+// IMPORTS NECESIDADES
 import axios from "axios";
-
+// FUNCION PRINCIPAL
 function UserProfile() {
+  // ESTADOS
   const [isHovered, setHovered] = useState(false);
   const [isEditMode, setEditMode] = useState(false);
   const [isCustomizationOpen, setIsCustomizationOpen] = useState(false);
@@ -22,24 +26,16 @@ function UserProfile() {
   const handleDescriptionEdit = () => {
     setDescriptionEditMode(!isDescriptionEditMode);
   };
-
+  // HANDLERS CAMBIO DE NOMBRE
   const handleNameChange = (e) => {
     setEditedName(e.target.value);
   };
-
+  // HANDLERS CAMBIO DE DESCRIPCION
   const handleDescriptionChange = (e) => {
     setEditedDescription(e.target.value);
   };
 
-  const handleFileChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setSelectedFile(file);
-      handleImageChange(file); // Pasar el archivo a handleImageChange
-      handleSaveChanges(); // Llamar a handleSaveChanges después de seleccionar el archivo
-    }
-  };
-
+  // FUNCION QUITAR /PUBLIC PRINCIPIO STRINGS
   function quitarPublic(str) {
     // Longitud de "public/"
     const publicLength = 7;
@@ -48,10 +44,7 @@ function UserProfile() {
     return str.slice(publicLength);
   }
 
-  const handleSaveChanges = () => {
-    setEditMode(false);
-  };
-
+  // FUNCION CAMBIAR FOTO DEL USUARIO
   const handleImageChange = () => {
     // Verificar el tamaño del archivo y otras validaciones...
     // 2 megabytes
@@ -83,6 +76,7 @@ function UserProfile() {
       });
   };
 
+  // FUNCION CAMBIAR NOMBRE DEL USUARIO
   const handleUpdateName = () => {
     // Realizar la solicitud al servidor para actualizar el nombre de usuario
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -113,6 +107,7 @@ function UserProfile() {
       });
   };
 
+  // FUNCION CAMBIAR DESCRIPCION DEL USUARIO
   const handleUpdateDescription = () => {
     // Realizar la solicitud al servidor para actualizar la descripción del usuario
     const user = JSON.parse(sessionStorage.getItem("currentUser"));
@@ -143,6 +138,7 @@ function UserProfile() {
       });
   };
 
+  // HANDLER PARA HACER LOGOUT
   const handleLogout = () => {
     // Elimina el token y cualquier otra información de sesión
     sessionStorage.removeItem("token");
@@ -152,6 +148,7 @@ function UserProfile() {
     window.location.href = "/Login";
   };
 
+  // VALORES DEL USUARIO
   const user = JSON.parse(sessionStorage.getItem("currentUser"));
 
   useEffect(() => {
@@ -163,9 +160,6 @@ function UserProfile() {
     }
   }, []);
 
-  const handleImageClick = () => {
-    document.getElementById("subida").click();
-  };
 
   return (
     <div className="flex items-center mb-4">
