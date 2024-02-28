@@ -71,7 +71,8 @@ function AddFriendGroup() {
 function InviteGroupModal() {
   const [groupId, setGroupId] = useState(""); // Estado para almacenar la ID del grupo
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     try {
       // Enviar una solicitud al backend para unirse al grupo con la ID proporcionada
       axios.post(
@@ -107,7 +108,6 @@ function InviteGroupModal() {
           <h2 className="text-2xl text-white font-semibold mb-4">
             Join a Group
           </h2>
-          <form onSubmit={handleSubmit}>
             <input
               type="text"
               name="GroupID"
@@ -116,13 +116,12 @@ function InviteGroupModal() {
               className="w-full border text-white border-gray-300 p-3 rounded-md mb-4 focus:outline-none focus:border-blue-500"
             />
             <button
-              type="submit"
               className="btn bg-blue-500 text-white rounded-md px-6 py-3 transition duration-300 hover:bg-blue-600"
+              onClick={(e) => {handleSubmit(e)}}
             >
               <FaUserPlus className="inline-block mr-2" size={18} />
               Enter the Group
             </button>
-          </form>
         </div>
       </div>
       <form method="dialog" className="modal-backdrop">
