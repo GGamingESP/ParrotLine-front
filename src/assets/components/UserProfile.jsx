@@ -166,7 +166,7 @@ function UserProfile() {
       <div className="w-12 h-12 rounded-full overflow-hidden mr-3">
         <img
           className="w-full h-full object-cover transition-transform transform hover:scale-105 filter hover:blur-sm cursor-pointer"
-          onClick={() => document.getElementById('my_modal_2').showModal()}
+          onClick={() => document.getElementById('my_modal_7').showModal()}
           src={user.user.image
             ? "https://ivan.informaticamajada.es/storage/" + quitarPublic(user.user.image.url)
             : "/default-user.webp"}
@@ -174,7 +174,7 @@ function UserProfile() {
         />
 
         {/* Modal para subir imagen perfil usuario*/}
-        <dialog id="my_modal_2" className="modal">
+        <dialog id="my_modal_7" className="modal">
           <div className="modal-box">
             <h3 className="font-bold text-lg">SUBIR IMAGEN</h3>
             <p className="py-4">Suba la imagen que deseea tener en el perfil</p>
